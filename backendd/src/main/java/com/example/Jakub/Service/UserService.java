@@ -36,6 +36,8 @@ public class UserService {
         return userMapper.toUserDto(user);
     }
     public UserDto login(AuthRequest authRequest) {
+        System.out.println(authRequest.getUsername());
+        System.out.println(authRequest.getPassword());
         UserInfo user = userRepository.findByUsername(authRequest.getUsername())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
@@ -46,6 +48,8 @@ public class UserService {
     }
 
     public UserDto register(SignUpDto userDto) {
+        System.out.println(userDto.getUsername());
+        System.out.println(userDto.getPassword());
         Optional<UserInfo> optionalUser = userRepository.findByUsername(userDto.getUsername());
 
         if (optionalUser.isPresent()) {

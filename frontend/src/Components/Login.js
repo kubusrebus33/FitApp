@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from "react";
 import FormInput from "./FormInput.jsx";
+import { request, setAuthToken, setUsername } from '../axios_helper.js';
 
 export default function Login() {
 
@@ -11,17 +12,24 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userData = { email: values.login, password: values.password }
+    const userData = { username: values.login, password: values.password }
 
-    fetch("http://localhost:8080/user/authenticate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData)
-    }).then(() => {
-      
-    })
-    console.log(userData);
-  }
+    request(
+      "POST",
+      "http://localhost:8080/login",
+      JSON.stringify(userData)
+    )
+      .then((response) => {
+        console.log("Success:", response.data);
+        setAuthToken(response.data.token);
+        setUsername(response.data.username);
+        window.location.href = '/Home';
+      })
+      .catch((error) => {
+        console.error("An error occurred:", error);
+        setAuthToken(null);
+      });
+  };
 
   const inputs = [
     {

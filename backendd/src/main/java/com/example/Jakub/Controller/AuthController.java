@@ -44,7 +44,8 @@ public class AuthController {
     public ResponseEntity<UserDto> register(@RequestBody SignUpDto user) {
         UserDto createdUser = userService.register(user);
         createdUser.setToken(jwtService.generateToken(user.getUsername()));
-        return ResponseEntity.created(URI.create("/users/" + createdUser.getUserId())).body(createdUser);
+        return ResponseEntity.ok(createdUser);
+//        return ResponseEntity.created(URI.create("/users/" + createdUser.getUserId())).body(createdUser);
     }
 
     @GetMapping("/getAll")
