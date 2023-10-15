@@ -7,22 +7,23 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor(staticName="build")
 @Data
+@Table(name="user_info")
 public class UserInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "user_id")
+    @Column(name = "user_id")
     private int userId;
 
-//    @NonNull
-//    @Column(name = "username")
+    @NonNull
+    @Column(name = "username")
     private String username;
 
-//    @NonNull
-//    @Column(name = "password")
+    @NonNull
+    @Column(name = "password")
     private String password;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name="user_profile_id", referencedColumnName = "profile_id")
-//    private UserProfile userProfile;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_profile")
+    private UserProfile userProf;
 }
