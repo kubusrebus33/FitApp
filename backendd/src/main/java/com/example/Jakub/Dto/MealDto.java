@@ -16,7 +16,7 @@ public class MealDto {
     private float carbohydrates;
     private float fats;
     private String recipe;
-    private boolean hasMeat;
-    private boolean hasGluten;
+    private int hasMeat;
+    private int hasGluten;
     private String categoryName;
 }
