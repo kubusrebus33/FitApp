@@ -15,11 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ExpressionException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -87,7 +84,9 @@ public class UserService {
         }
 
         UserProfile user = userProfileMapper.signUpToUserProfile(userProfileDto);
+        System.out.println(user);
         UserProfile savedUser = userProfileRepository.save(user);
+        System.out.println(savedUser);
 
         loggedUser.setUserProf(savedUser);
         userRepository.save(loggedUser);
@@ -97,24 +96,28 @@ public class UserService {
 
     public UserProfileDto getUserProfile(String bearerToken){
         UserInfo loggedUser = userRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
-
+        System.out.println(loggedUser);
         if (loggedUser.getUserProf() == null) {
             throw new AppException("This username got no user Profile set!", HttpStatus.BAD_REQUEST);
         }
 
         UserProfile DBuser = userProfileRepository.findByProfileId(loggedUser.getUserProf().getProfileId());
-
+        System.out.println(DBuser);
         return userProfileMapper.toUserProfileDto(DBuser);
     }
 
-//    public String newUserProfile(@RequestHeader("Authorization") String bearerToken){
-//        UserProfile user = jwtService.extractUsername(bearerToken);
-//    }
+    public void deleteUserProfile(String bearerToken){
+        UserInfo loggedUser = userRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
 
-    public List<UserInfo> getListOfAllUsers(){
-        List<UserInfo> listOfAllUsers = userRepository.findAll();
-        return listOfAllUsers;
+        if (loggedUser.getUserProf() == null) {
+            throw new AppException("This username got no user Profile set!", HttpStatus.BAD_REQUEST);
+        }
+
+        Integer id = loggedUser.getUserProf().getProfileId();
+
+        loggedUser.setUserProf(null);
+        userRepository.save(loggedUser);
+
+        userProfileRepository.deleteById(id);
     }
-
-
 }

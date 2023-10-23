@@ -2,8 +2,12 @@ import * as React from 'react';
 import { useState } from "react";
 import FormInput from "./FormInput.jsx";
 import { request, setAuthToken, setUsername } from '../axios_helper.js';
+import { Link } from 'react-router-dom';
+import Paper from '@mui/material/Paper';
+import './paperStyles.css';
 
 export default function Login() {
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [values, setValues] = useState({
     login: "",
@@ -26,8 +30,9 @@ export default function Login() {
         window.location.href = '/Home';
       })
       .catch((error) => {
-        console.error("An error occurred:", error);
+        window.location.href='/login';
         setAuthToken(null);
+        window.alert("Błędne dane logowania!");
       });
   };
 
@@ -35,15 +40,18 @@ export default function Login() {
     {
       id: 1,
       name: "login",
-      type: "text",
-      placeholder: "login",
-      label: "Login: ",
+      type: "email",
+      placeholder: "email",
+      errorMessage: "Wpisz poprawny adres email!",
+      label: "Email: ",
       required: true
     },
     {
       id: 2,
       name: "password",
       type: "password",
+      errorMessage: "Hasło musi zawierać conajmniej 8 znaków!",
+      pattern: "^.{8,}$",
       placeholder: "hasło",
       label: "Hasło ",
       required: true
@@ -55,13 +63,21 @@ export default function Login() {
 
   return (
     <div className="loginForm">
-      <form onSubmit={handleSubmit}>
-        <h1> Login </h1>
-        {inputs.map((input) => (
-          <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
-        ))}
-        <button>Submit</button>
-      </form>
+      <Paper className="login" elevation={3}>
+        <form onSubmit={handleSubmit}>
+          <h1> Login </h1>
+          {inputs.map((input) => (
+            <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
+          ))}
+          <h4>Nie masz konta?
+            <nav>
+              <Link to="/Register">Zarejestruj się</Link>
+            </nav>
+          </h4>
+
+          <button>Submit</button>
+        </form>
+      </Paper>
     </div>
   );
 }

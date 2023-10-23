@@ -6,7 +6,8 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "build")
-@Data
+@Getter
+@Setter
 @Table(name = "user_profile")
 public class UserProfile {
 
@@ -30,9 +31,6 @@ public class UserProfile {
     @Column(name = "activity_level")
     private int activityLevel;
 
-    @Column(name = "work_activity_level")
-    private int workActivityLevel;
-
     @Column(name = "goal")
     private int goal;
 
@@ -40,7 +38,7 @@ public class UserProfile {
     private float bmi;
 
     @Column(name = "caloric_demand")
-    private float caloricDemand;
+    private int caloricDemand;
 
     @OneToOne(mappedBy = "userProf")
     private UserInfo userInfo;

@@ -1,0 +1,76 @@
+.menu {
+    padding: 20px;
+    margin: 10px;
+    background-color: green;
+    width: 20%;
+    display: inline-block;
+    height: 100%;
+    flex: 0 0 auto;
+}
+
+.content {
+    padding: 20px;
+    margin: 10px;
+    background-color: black;
+    width: 80%;
+    height: 100%;
+    display: inline-block;
+    flex: 1 1 auto;
+}
+
+.BigBox {
+    padding: 30px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    overflow-y: auto;
+    justify-content: space-between;
+    max-height: 100%;
+}
+
+.BigBox-h1 {
+    width: 100%;
+}
+
+.registerForm {
+    display: flex;
+    justify-content: center;
+    padding-top:20px;
+    padding-bottom:20px;
+}
+
+.loginForm {
+    padding-top:20px;
+    padding-bottom:20px;
+    display: flex;
+    justify-content: center;
+}
+
+.login{
+    padding-bottom:20px;
+}
+
+.clickable-text {
+    cursor: pointer;
+    /* Change the cursor to a pointer on hover */
+    padding: 15px;
+}
+
+.clickable-text:hover {
+    background-color: #cccccc;
+}
+
+.register {
+    padding-bottom: 20px;
+}
+
+@media screen and (max-width: 500px) {
+
+    .content,
+    .menu {
+        flex: none;
+        /* Reset flex property */
+        width: 100%;
+        /* Full width on smaller screens */
+    }
+}

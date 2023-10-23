@@ -3,18 +3,14 @@ package com.example.Jakub.Controller;
 import com.example.Jakub.Dto.SignUpDto;
 import com.example.Jakub.Dto.UserDto;
 import com.example.Jakub.Dto.UserProfileDto;
-import com.example.Jakub.Entity.UserInfo;
 import com.example.Jakub.Service.JwtService;
 import com.example.Jakub.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -45,7 +41,7 @@ public class AuthController {
     public ResponseEntity<UserProfileDto> addProfile(@RequestHeader HttpHeaders headers, @RequestBody UserProfileDto userProfileDto) {
         String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
         bearerToken = bearerToken.substring(7);
-
+        System.out.println(userProfileDto);
         UserProfileDto userProfile = userService.newUserProfile(bearerToken, userProfileDto);
         return ResponseEntity.ok(userProfile);
 //        return ResponseEntity.created(URI.create("/users/" + createdUser.getUserId())).body(createdUser);
@@ -61,8 +57,11 @@ public class AuthController {
 //        return ResponseEntity.created(URI.create("/users/" + createdUser.getUserId())).body(createdUser);
     }
 
-    @GetMapping("/getAll")
-    public List<UserInfo> getAll(){
-        return userService.getListOfAllUsers();
+    @GetMapping("/deleteUserProfile")
+    public void deleteProfile(@RequestHeader HttpHeaders headers) {
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        bearerToken = bearerToken.substring(7);
+
+        userService.deleteUserProfile(bearerToken);
     }
 }

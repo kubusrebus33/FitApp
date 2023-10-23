@@ -10,6 +10,7 @@ public interface UserProfileMapper {
 
     UserProfileDto toUserProfileDto(UserProfile UserProfile);
 
+    @Mapping(target = "userInfo", ignore = true)
     @Mapping(target = "profileId", ignore = true)
     UserProfile signUpToUserProfile(UserProfileDto userProfileDto);
 }

@@ -7,4 +7,7 @@ import java.util.Optional;
 
 public interface UserProfileRepository extends JpaRepository<UserProfile, Integer> {
     UserProfile findByProfileId(Integer id);
+
+    @Override
+    void deleteById(Integer integer);
 }

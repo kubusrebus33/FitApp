@@ -2,6 +2,8 @@ import FormInput from "./FormInput.jsx";
 import { useState } from "react";
 import "./Register.css"
 import { request, setAuthToken, setUsername } from '../axios_helper.js';
+import Paper from '@mui/material/Paper';
+import './paperStyles.css';
 
 const Register = () => {
     const [values, setValues] = useState({
@@ -52,20 +54,20 @@ const Register = () => {
             "POST",
             "http://localhost:8080/register",
             JSON.stringify(userData)
-          )
-          .then((response) => {
-            console.log("Success:", response.data);
-            setAuthToken(response.data.token);
-            setUsername(response.data.username);
-            window.location.href = '/Home';
-          })
-          .catch((error) => {
-            console.error("An error occurred:", error);
-            setAuthToken(null);
-            // Reroute or handle the error in a way that suits your application
-          });
-      };
-      
+        )
+            .then((response) => {
+                console.log("Success:", response.data);
+                setAuthToken(response.data.token);
+                setUsername(response.data.username);
+                window.location.href = '/Home';
+            })
+            .catch((error) => {
+                console.error("An error occurred:", error);
+                setAuthToken(null);
+                // Reroute or handle the error in a way that suits your application
+            });
+    };
+
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
@@ -73,16 +75,18 @@ const Register = () => {
 
     return (
         <div className="registerForm">
-            <form onSubmit={handleSubmit}>
-                <h1> Register </h1>
-                {inputs.map((input) => (
-                    <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
-                ))}
-                {errorMessage && (
-                    <p className="error"> {errorMessage} </p>
-                )}
-                <button>Submit</button>
-            </form>
+            <Paper className="register" elevation={3}>
+                <form onSubmit={handleSubmit}>
+                    <h1> Register </h1>
+                    {inputs.map((input) => (
+                        <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
+                    ))}
+                    {errorMessage && (
+                        <p className="error"> {errorMessage} </p>
+                    )}<br />
+                    <button className="submitButton">Submit</button>
+                </form>
+            </Paper>
         </div>
     )
 }
