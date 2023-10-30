@@ -1,9 +1,12 @@
 package com.example.Jakub.Dto;
 
+import com.example.Jakub.Entity.MealIngredient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +21,7 @@ public class MealDto {
     private String recipe;
     private int hasMeat;
     private int hasGluten;
+    private int hasLactose;
     private String categoryName;
+    private List<String> ingredientAssoc;
 }

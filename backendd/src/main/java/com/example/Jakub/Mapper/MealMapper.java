@@ -8,8 +8,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MealMapper {
 
+    @Mapping(target = "ingredientAssoc", ignore = true)
     MealDto toMealDto(Meal meal);
 
-    @Mapping(target = "ingredientSet", ignore = true)
+    @Mapping(target = "ingredientAssoc", ignore = true)
     Meal toMeal(MealDto mealDto);
 }

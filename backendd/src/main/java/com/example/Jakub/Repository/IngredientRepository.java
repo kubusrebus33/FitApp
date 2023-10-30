@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
-    HashSet<Ingredient> findIngredientByMealNumber(Meal meal);
-//    @Query("SELECT i.ingredientId, i.ingredientName, i.quantity FROM Ingredient i WHERE i.mealNumber = :meal")
-//    List<Object[]> findIngredientsInfoByMealNumber(@Param("meal") Meal meal);
+    Ingredient findIngredientByIngredientId(int id);
+    Ingredient findIngredientByIngredientName(String name);
 }

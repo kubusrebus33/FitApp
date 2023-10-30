@@ -2,8 +2,8 @@ package com.example.Jakub.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -15,24 +15,18 @@ public class Ingredient {
     @Column(name = "ingredient_id")
     private int ingredientId;
 
-    @Column(name = "meal_name", nullable = false, length = 50)
+    @Column(name = "ingredient_name", nullable = false, length = 100)
     private String ingredientName;
 
-    @Column(name = "quantity", nullable = false)
-    private int quantity;
+    @OneToMany(mappedBy = "ingredient")
+    private List<MealIngredient> mealAssoc;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotFound(action = NotFoundAction.IGNORE)
-    @JoinColumn(name="meal_id")
-    private Meal mealNumber;
-
-    public Ingredient(String ingredientName, int quantity, Meal mealNumber) {
+    public Ingredient(String ingredientName) {
         this.ingredientName = ingredientName;
-        this.quantity = quantity;
-        this.mealNumber = mealNumber;
     }
-    public Ingredient(String ingredientName, int quantity) {
-        this.ingredientName = ingredientName;
-        this.quantity = quantity;
+
+    @Override
+    public String toString() {
+        return ingredientName;
     }
 }
