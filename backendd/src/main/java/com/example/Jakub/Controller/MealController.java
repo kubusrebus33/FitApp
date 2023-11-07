@@ -1,6 +1,7 @@
 package com.example.Jakub.Controller;
 
 import com.example.Jakub.Dto.MealDto;
+import com.example.Jakub.Dto.UserProfileDto;
 import com.example.Jakub.Entity.Meal;
 import com.example.Jakub.Entity.MealIngredient;
 import com.example.Jakub.Mapper.MealMapper;
@@ -8,9 +9,11 @@ import com.example.Jakub.Service.JwtService;
 import com.example.Jakub.Service.MealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -48,4 +51,16 @@ public class MealController {
 
         return ResponseEntity.ok(y);
     }
+
+    @GetMapping("/getUserDiet")
+//    @RequestHeader HttpHeaders headers
+    public ResponseEntity<List<Meal>> getDiet() {
+//        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+//        bearerToken = bearerToken.substring(7);
+
+        List<Meal> newList = mealService.getDiet();
+
+        return ResponseEntity.ok(newList);
+    }
+
 }

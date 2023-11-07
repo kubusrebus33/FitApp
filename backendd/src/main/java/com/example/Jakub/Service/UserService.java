@@ -97,6 +97,7 @@ public class UserService {
     public UserProfileDto getUserProfile(String bearerToken){
         UserInfo loggedUser = userRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
         System.out.println(loggedUser);
+
         if (loggedUser.getUserProf() == null) {
             throw new AppException("This username got no user Profile set!", HttpStatus.BAD_REQUEST);
         }

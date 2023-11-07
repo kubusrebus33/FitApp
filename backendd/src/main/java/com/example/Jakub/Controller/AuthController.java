@@ -41,10 +41,11 @@ public class AuthController {
     public ResponseEntity<UserProfileDto> addProfile(@RequestHeader HttpHeaders headers, @RequestBody UserProfileDto userProfileDto) {
         String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
         bearerToken = bearerToken.substring(7);
+
         System.out.println(userProfileDto);
+
         UserProfileDto userProfile = userService.newUserProfile(bearerToken, userProfileDto);
         return ResponseEntity.ok(userProfile);
-//        return ResponseEntity.created(URI.create("/users/" + createdUser.getUserId())).body(createdUser);
     }
 
     @GetMapping("/getUserProfile")
@@ -54,7 +55,6 @@ public class AuthController {
 
         UserProfileDto userProfile = userService.getUserProfile(bearerToken);
         return ResponseEntity.ok(userProfile);
-//        return ResponseEntity.created(URI.create("/users/" + createdUser.getUserId())).body(createdUser);
     }
 
     @GetMapping("/deleteUserProfile")

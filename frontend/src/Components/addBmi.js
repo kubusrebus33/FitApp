@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import FormInput from "./FormInput.jsx";
 import "./Register.css"
-import { request, setAuthToken, setUsername, getAuthToken } from '../axios_helper.js';
+import { request, getAuthToken } from '../axios_helper.js';
 import Paper from '@mui/material/Paper';
 import "./paperStyles.css";
-import { IntegrationInstructionsRounded, PausePresentationTwoTone } from "@mui/icons-material";
+// import { IntegrationInstructionsRounded, PausePresentationTwoTone } from "@mui/icons-material";
 
 const Create = () => {
     const [error, setError] = useState('');
@@ -58,6 +58,7 @@ const Create = () => {
 
     const [sex, setSex] = useState('');
     const [goal, setGoal] = useState('');
+    const [dietInfo, setDietInfo] = useState(111);
     const [activityLevel, setActivity] = useState('');
 
     const [values, setValues] = useState({
@@ -105,14 +106,11 @@ const Create = () => {
     function finalCaloriesDemand(weight, calories, goal){
         switch(goal){
             case '1':
-                return calories - (0.005 * values.weight * 1000 * 7.35) / 7 ;
-                break;
+                return calories - (0.005 * values.weight * 1000 * 7.35) / 7;
             case '2':
                 return calories;
-                break;
             case '3':
-                return calories + (0.005 * values.weight * 1000 * 7.35) / 7 ;
-                break;
+                return calories + (0.005 * values.weight * 1000 * 7.35) / 7;
             default:
                 return 0;
         }
@@ -139,12 +137,12 @@ const Create = () => {
             activityLevel,
             weight: values.weight,
             height: values.height,
+            dietInfo,
             caloricDemand: caloricDemand,
             bmi: bmi
         };
-
         console.log("Zapotrzebowanie: " + caloricDemand);
-
+        console.log("dietInfo: " + dietInfo);
         request(
             "POST",
             "http://localhost:8080/addUserProfile",
@@ -286,6 +284,14 @@ const Create = () => {
                             <label>utrzymać wagę</label><br />
                             <input type="radio" value="3" name="goal" onChange={(e) => setGoal(e.target.value)}></input>&nbsp;&nbsp;
                             <label>przytyć</label><br /><br />
+
+                            <label>Preferencje żywieniowe:</label><br />
+                            <input type="radio" value="11" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
+                            <label>Bez mięsa</label><br />
+                            <input type="radio" value="101" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
+                            <label>Bez glutenu</label><br />
+                            <input type="radio" value="110" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
+                            <label>Bez Laktozy</label><br /><br />
 
                             <label> Ilość aktywności fizycznej:</label><br />
                             <input type="radio" value="1" name="activityLevel" required onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;

@@ -3,6 +3,8 @@ package com.example.Jakub.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "build")
@@ -39,6 +41,9 @@ public class UserProfile {
 
     @Column(name = "caloric_demand")
     private int caloricDemand;
+
+    @Column(name = "dietInfo")
+    private int dietInfo;
 
     @OneToOne(mappedBy = "userProf")
     private UserInfo userInfo;

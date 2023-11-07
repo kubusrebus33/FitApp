@@ -8,7 +8,7 @@ export const getUsername = () => {
     return window.localStorage.getItem('username');
 };
 
-export const setUsername= (username) => {
+export const setUsername = (username) => {
     window.localStorage.setItem('username', username);
 };
 
