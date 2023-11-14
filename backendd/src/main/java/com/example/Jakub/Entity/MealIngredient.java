@@ -29,10 +29,6 @@ public class MealIngredient {
 
     @Override
     public String toString() {
-//        return "{" +
-//                "\"name\":\"" + ingredient + "\"," +
-//                "\"quantity\":" + quantity +
-//                "}";
         return ingredient+ ":" +quantity+"g";
     }
 }

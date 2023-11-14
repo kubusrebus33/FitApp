@@ -3,6 +3,8 @@ package com.example.Jakub.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor(staticName="build")
@@ -27,4 +29,7 @@ public class UserInfo {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_profile")
     private UserProfile userProf;
+
+    @OneToMany(mappedBy = "_user")
+    private List<mealKit> xy;
 }

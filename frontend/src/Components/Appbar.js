@@ -14,12 +14,24 @@ export default function Appbar() {
   const handleLogout = (e) =>{
     e.preventDefault();
 
-    setAuthToken();
-    setUsername();
+    setAuthToken(null);
+    setUsername(null);
     
     window.location.reload(false);
     window.location.href = '/login';
   }
+
+  function extractUsername(email) {
+    const atIndex = email.indexOf('@');
+
+    if (atIndex !== -1) {
+        const username = email.substring(0, atIndex);
+        return username;
+    } else {
+        return email;
+    }
+}
+
   const buttonStyle = { color: "white", border: "1px solid white", padding: "5px" }
   const tabStyle = { color: "white", padding: "5px", fontSize: "15px", borderRadius: "0", paddingLeft: '20px', paddingRight: '20px' };
   return (
@@ -34,18 +46,18 @@ export default function Appbar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             EatFitNow
           </Typography>
-          <nav>
-          <Link to="/Home"><Button color="inherit" style={{ ...tabStyle, borderRight: '2px solid white' }}>Strona główna</Button></Link>
-            <Link to="/addBmi"><Button color="inherit" style={{ ...tabStyle, borderRight: '2px solid white' }}>Kalkulator kalorii</Button></Link>
-            <Link to="/Users"><Button color="inherit" style={tabStyle}>Moja dieta</Button></Link>
-          </nav>
           {getAuthToken() !== null && getAuthToken() !== "null" && getAuthToken() !== "undefined" ? (
-            <div>
-              <h2>{`witaj ${getUsername()}`}</h2>
-              <Button color="inherit" onClick={handleLogout}> 
-                Logout
-              </Button>
-            </div>
+            <>
+            <nav>
+              <Link to="/Home"><Button color="inherit" style={{ ...tabStyle, borderRight: '2px solid white' }}>Strona główna</Button></Link>
+              <Link to="/addBmi"><Button color="inherit" style={{ ...tabStyle, borderRight: '2px solid white' }}>Kalkulator kalorii</Button></Link>
+              <Link to="/Diet"><Button color="inherit" style={tabStyle}>Moja dieta</Button></Link>
+            </nav>
+            <h2>{`Witaj ${extractUsername(getUsername())}`}</h2>
+            <Button color="inherit" onClick={handleLogout}> 
+              Logout
+            </Button>
+          </>
           ) : (
             <nav>
               <Link to="/Login">

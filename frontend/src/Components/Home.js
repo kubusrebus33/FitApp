@@ -1,95 +1,42 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import "./paperStyles.css";
+import { useState, useEffect } from "react";
+import { request, setAuthToken, getAuthToken } from '../axios_helper.js';
 
 export default function Home() {
 
+  const [error, setError] = useState('');
+  const [showDiv, setShowDiv] = useState(true);
+
+
+  useEffect(() => async () => {
+    const AuthToken = getAuthToken();
+
+    if (AuthToken === null || AuthToken === "null" || AuthToken === "undefined") {
+      setError("You are not logged in! Returning to login page.");
+      setShowDiv(false);
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      await delay(3000);
+
+      window.location.href = '/login';
+    } else {
+
+    }
+  }, []);
+
   return (
+    <div>
+    <h1>{error}</h1>
     <div className="BigBox">
-        <Paper className="menu" elevation={3}>Menu Content</Paper>
-        <Paper className="content" elevation={3}>Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat tempor nisl nisi.
-          At mauris dictumst convallis pulvinar
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-            culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat tempor nisl nisi.
-          At mauris dictumst convallis pulvinar
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-            culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat tempor nisl nisi.
-          At mauris dictumst convallis pulvinar
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue at. Magna dolor curae; hac mus lectus dignissim j
-          usto volutpat gravida sodales sit. Interdum suscipit primis mi euismod diam? Velit suscipit,
-          semper per pharetra tempor iaculis. Volutpat 
-          Dui nec vehicula, nisl est commodo tortor quis
-          culis. Proin primis vehicula luctus convallis cras quis blandit quisque? Dolor placerat se
-          d molestie dignissim fusce iaculis ad pulvinar etiam! Iaculis laoreet facilisi turpis ultricies
-          bibendum consequat netus nascetur interdum, augue a
-        </Paper>
-    </div>
+
+      <br /><br />
+      <Paper className="menu" elevation={3}>
+      </Paper>
+        
+      <Paper className="content" elevation={3}>
+      </Paper>
+    </div >
+  </div >
   );
 }

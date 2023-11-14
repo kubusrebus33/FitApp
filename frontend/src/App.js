@@ -4,7 +4,7 @@ import Create from './Components/addBmi';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Home from './Components/Home';
-import Users from './Components/UserInfo';
+import Diet from './Components/Diet';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/addBmi" element={<Create />} />
           <Route path="/Home" element={<Home />} />
-          <Route path="/Users" element={<Users />} />
+          <Route path="/Diet" element={<Diet />} />
         </Routes>
       </div>
     </Router>

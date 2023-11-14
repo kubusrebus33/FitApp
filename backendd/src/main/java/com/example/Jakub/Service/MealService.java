@@ -1,15 +1,12 @@
 package com.example.Jakub.Service;
 
 import com.example.Jakub.Dto.UserProfileDto;
-import com.example.Jakub.Entity.Ingredient;
-import com.example.Jakub.Entity.Meal;
-import com.example.Jakub.Entity.MealIngredient;
-import com.example.Jakub.Entity.UserProfile;
-import com.example.Jakub.Repository.IngredientRepository;
-import com.example.Jakub.Repository.MealIngredientRepository;
-import com.example.Jakub.Repository.MealRepository;
+import com.example.Jakub.Entity.*;
+import com.example.Jakub.Exception.AppException;
+import com.example.Jakub.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +17,12 @@ import java.util.List;
 public class MealService {
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private mealKitRepository mealKitRepository;
 
     @Autowired
     private MealRepository mealRepository;
@@ -35,29 +38,38 @@ public class MealService {
 
     public void seedMeals(){
         mealRepository.save(new Meal("Makaron z pesto, pieczarkami i kurczakiem", 675.0f, 40.9f, 61.7f, 29.8f, "Makaron ugotuj al'dente (zostaw około 40 ml wody z gotowania). Mięso pokrój w kostkę, cebulę i czosnek posiekaj, pieczarki pokrój w plasterki. Cebulę i czosnek zeszklij na patelni. Następnie dodaj pieczarki i duś pod przykryciem aż puszczą wodę. Dodaj mięso i smaż aż będzie gotowe. Przypraw do smaku. Dodaj pesto i wodę. Na koniec dodaj śmietanę, makaron i wymieszaj. Danie posyp parmezanem i udekoruj rukolą.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Kurczak teriyaki z kaszą i brokułem", 823.0f, 64.1f, 85.5f, 27.3f, "Kaszę ugotuj. Brokuł podziel na mniejsze różyczki, marchewkę pokrój w drobną kostkę. Na patelni podsmaż warzywa, dodaj sos sojowy i trochę wody. Duś do miękkości. Dodaj kaszę i całość wymieszaj. Mięso pokrój w plastry, przypraw do smaku pieprzem i solą i podsmaż z obu stron. Wlej sos teriyaki, dodaj sezam i smaż jeszcze 1 minutę. Kaszę podawaj z mięsem.", 1, 1, 1, "dinner"));
+        mealRepository.save(new Meal("Kurczak teriyaki z kaszą i brokułem", 823.0f, 64.1f, 85.5f, 27.3f, "Kaszę ugotuj. Brokuł podziel na mniejsze różyczki, marchewkę pokrój w drobną kostkę. Na patelni podsmaż warzywa, dodaj sos sojowy i trochę wody. Duś do miękkości. Dodaj kaszę i całość wymieszaj. Mięso pokrój w plastry, przypraw do smaku pieprzem i solą i podsmaż z obu stron. Wlej sos teriyaki, dodaj sezam i smaż jeszcze 1 minutę. Kaszę podawaj z mięsem.", 1, 1, 0, "dinner"));
         mealRepository.save(new Meal("Makaron wysokobiałkowy z kurczakiem", 922.0f, 64.9f, 86.0f, 35.4f, "Makaron ugotuj al'dente. Mięso pokrój w kostkę. Cebulę posiekaj i zeszklij na patelni. Dodaj koncentrat, przyprawy i wymieszaj. Dodaj mięso i smaż aż będzie gotowe. Wlej śmietankę, dodaj starty ser i wymieszaj. Na koniec dodaj makaron i połącz wszystkie składniki. Na talerzu posyp posiekaną natką.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Stek wołowy z kaszą i brokułami", 806.0f, 64.9f, 97.8f, 21.4f, "Kaszę i brokuł ugotuj. Na patelni rozgrzej oliwę i połóż mięso. Obsmażaj po 1 minucie z każdej strony aż mięso będzie brązowe. Zmniejsz ogień, mięso przypraw do smaku pieprzem i solą i smaż z obu stron aż steki będą średnio wysmażone. Przygotuj sos: jogurt wymieszaj z posiekanym czosnkiem i koperkiem. Kaszę podawaj z mięsem i brokułami. Brokuły polej sosem.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Pieczony halibut z ryżem i brokułem", 374.0f, 28.5f, 50.1f, 8.0f, "Piekarnik nagrzej do 180 stopni. Ryż i brokuł ugotuj. Brokuł podziel na mniejsze różyczki. Rybę skrop oliwą z oliwek, sokiem z cytryny, przypraw do smaku oregano, pieprzem i solą. Rybę ułóż na blaszce wyłożonej papierem do pieczenia i piecz przez 15 minut. Rybę posyp posiekanym koperkiem i podawaj z ryżem i brokułami.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Kaszotto gryczane z kurkami", 457.0f, 33.4f, 53.9f, 14.0f, "Kaszę ugotuj według instrukcji na opakowaniu i wymieszaj z sosem sojowym. Mięso pokrój w kostkę, czosnek posiekaj i podsmaż na patelni. Przypraw do smaku. Cebulę i pora pokrój w półplasterki i wrzuć na patelnię. Smaż około 5-6 minut i przypraw pieprzem i solą. Na koniec dodaj umyte i oczyszczone kurki i smaż kilka minut. Wsyp ugotowaną kaszę i wymieszaj z zawartością patelni. Na talerzu posyp posiekanym szczypiorkiem.", 1, 1, 1, "dinner"));
+        mealRepository.save(new Meal("Stek wołowy z kaszą i brokułami", 806.0f, 64.9f, 97.8f, 21.4f, "Kaszę i brokuł ugotuj. Na patelni rozgrzej oliwę i połóż mięso. Obsmażaj po 1 minucie z każdej strony aż mięso będzie brązowe. Zmniejsz ogień, mięso przypraw do smaku pieprzem i solą i smaż z obu stron aż steki będą średnio wysmażone. Przygotuj sos: jogurt wymieszaj z posiekanym czosnkiem i koperkiem. Kaszę podawaj z mięsem i brokułami. Brokuły polej sosem.", 1, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Pieczony halibut z ryżem i brokułem", 374.0f, 28.5f, 50.1f, 8.0f, "Piekarnik nagrzej do 180 stopni. Ryż i brokuł ugotuj. Brokuł podziel na mniejsze różyczki. Rybę skrop oliwą z oliwek, sokiem z cytryny, przypraw do smaku oregano, pieprzem i solą. Rybę ułóż na blaszce wyłożonej papierem do pieczenia i piecz przez 15 minut. Rybę posyp posiekanym koperkiem i podawaj z ryżem i brokułami.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Kaszotto gryczane z kurkami", 457.0f, 33.4f, 53.9f, 14.0f, "Kaszę ugotuj według instrukcji na opakowaniu i wymieszaj z sosem sojowym. Mięso pokrój w kostkę, czosnek posiekaj i podsmaż na patelni. Przypraw do smaku. Cebulę i pora pokrój w półplasterki i wrzuć na patelnię. Smaż około 5-6 minut i przypraw pieprzem i solą. Na koniec dodaj umyte i oczyszczone kurki i smaż kilka minut. Wsyp ugotowaną kaszę i wymieszaj z zawartością patelni. Na talerzu posyp posiekanym szczypiorkiem.", 1, 0, 0, "dinner"));
         mealRepository.save(new Meal("Makaron bezglutenowy z kurczakiem i kurkami bez laktozy", 604.0f, 30.7f, 69.3f, 24.3f, "Makaron ugotuj al'dente. Cebulę posiekaj, kurczaka pokrój w kostkę. Na patelni zeszklij cebulę, następnie dodaj mięso. Przypraw do smaku. Gdy mięso będzie gotowe dodaj oczyszczone kurki i smaż kilka minut. Wlej śmietanę (w temperaturze pokojowej) i wymieszaj. Dodaj makaron i połącz wszystkie składniki. Posyp posiekaną natką.", 1, 0, 0, "dinner"));
-        mealRepository.save(new Meal("Risotto dyniowe z kurczakiem", 652.0f, 43.6f, 70.1f, 23.3f, "Mięso i dynię pokrój w kostkę. W garnku zagotuj bulion i podgrzej mleko. Cebulę posiekaj i podsmaż na niewielkim ogniu na maśle. Następnie dodaj mięso i obsmażaj z obu stron. Dodaj dynię i smaż około 2 minuty. Wsyp ryż, wymieszaj i całość zalej bulionem (możesz to robić stopniowo). Dodaj przyprawy. Na koniec dodaj starty ser, śmietanę i wymieszaj.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Makaron z tofu i pomidorami", 493.0f, 22.2f, 70.7f, 17.3f, "Makaron ugotuj al dente wg instrukcji na opakowaniu. Tofu pokrój w małą kostkę. Pomidory suszone pokrój w drobne paseczki, natomiast pomidory koktajlowe przerój na pół. Na rozgrzaną patelnię wlej oliwę, dodaj tofu, pomidory i przyprawy. Duś pod przykryciem ok. 7 minut. Świeże zioła posiekaj. Makaron podawaj z zawartością patelni posypane ziołami.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Indyk z brokułem w sosie sojowym", 448.0f, 30.4f, 9.6f, 32.4f, "Na patelni rozgrzej olej kokosowy. Dodaj mięso. Smaż, aż straci swój różowy kolor. Pokrój brokuł na małe kawałki. Imbir zetrzyj lub drobno posiekaj. Świeże zioła posiekaj. Dodaj wszystkie składniki do mięsa i duś pod przykryciem ok. 15-20 minut, aż brokuł będzie mięki.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Ryż z warzywami i jajkiem sadzonym", 563.0f, 21.6f, 49.8f, 30.9f, "Ryż ugotuj. Warzywa pokrój w drobną kostkę i podsmaż na patelni. Gdy warzywa będą miękkie, dodaj ryż, przyprawy i całość wymieszaj. Usmaż sadzone jajka i podawaj z warzywnym ryżem. Posyp posiekaną natką i pestkami dyni.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Curry z tofu w mleczku kokosowym z ryżem", 533.0f, 16.2f, 59.5f, 28.2f, "Ryż i fasolkę ugotuj. Tofu pokrój w kostkę i przypraw do smaku. Podsmaż na patelni. Paprykę i marchewkę pokrój w drobną kostkę i wrzuć na patelnię. Dodaj sos sojowy i krótko podsmażaj aż warzywa zmiękną. Możesz dolać trochę wody. Na koniec wlej mleczko kokosowe, dodaj ugotowaną fasolę, wymieszaj i zagotuj. Curry podawaj z ryżem.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Kotlety z soczewicy, kaszy jaglanej z kapustą kiszoną", 611.0f, 22.8f, 92.6f, 19.2f, "Piekarnik nagrzej do temperatury 180 stopni. Soczewicę oraz kaszę jaglaną ugotuj wg instrukcji na opakowaniu. Świeże zioła posiekaj. Kaszę, soczewicę, mąkę, zioła oraz przyprawy zblenduj. Formuj z masy małe kulki, układaj na blaszce do pieczenia wyłożonej papierem, a następnie spłaszcz do formy kotleta. Piecz ok 15 minut lub do zarumienienia. Kapustę połącz z olejem. Kotlety podawaj z kapustą kiszoną.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Łosoś pieczony z warzywami i chrupkami z ciecierzycy", 720.0f, 48.0f, 23.5f, 49.5f, "Piekarnik nagrzej do 190 stopni. Łososia i ciecierzycę skrop oliwą, przypraw do smaku pieprzem, słodką papryką i solą. Rybę i ciecierzycę połóż na papierze do pieczenia i piecz przez 15 minut. Przygotuj sałatkę: ogórka pokrój w plasterki, pomidorki przekrój na pół, sałatę porwij. Wymieszaj wszystkie składnik i skrop olejem lnianym. Przypraw do smaku i posyp ciecierzycą. Rybę podawaj z sałatką.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Sałatka z soczewicy z halloumi", 996.0f, 46.1f, 57.5f, 64.0f, "Grzyby i ser pokrój. Na patelni rozgrzej olej, dodaj grzyby i podsmażaj, aż się zarumienią. Następnie dodaj ser i chilli. Pozostałe warzywa pokrój. Soczewicę odcedź. Wszystkie składniki połącz w misce wraz z przyprawami oraz oliwą.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Gulasz z soczewicy z ziemniakami i groszkiem", 705.0f, 50.8f, 71.0f, 23.8f, "Warzywa obierz i pokrój w kostkę. Zioła posiekaj i zostaw na koniec do posypania gotowego dania. Mięso pokrój w kostkę. Do garnka wlej oliwę, dodaj mięso i lekko podsmaż. Dodaj pozostałe składniki. Duś pod przykryciem przez 20 min na średniej mocy palnika. Wyłożone na talerz danie posyp ziołami.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Sałatka z burakiem, komosą ryżową i pestkami dyni", 681.0f, 20.3f, 73.6f, 34.9f, "Komosę ugotuj wg instrukcji na opakowaniu, wyłóż na talerz aby wystygła. Warzywa pokrój. Wymieszaj wszystkie składniki z olejem i pestkami.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Zupa koperkowa z klopsikami", 474.0f, 36.3f, 46.9f, 16.5f, "Mięso włóż do miski, dodaj mąkę, posiekaną pietruszkę, sól i pieprz. Wymieszaj, uformuj małe kulki i obtocz je delikatnie w mące. Do garnka wrzuć pokrojonego w kostkę ziemniaka, pietruszkę i marchewkę. Zalej warzywa gorącym bulionem i gotuj ok. 10 minut. Dodaj klopsiki, masło klarowane i gotuj kolejne 15 minut. Dodaj posiekany koperek, podgotowuj jeszcze chwilę. Dopraw do smaku solą i pieprzem.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Zapiekany makaron bezglutenowy", 829.0f, 42.4f, 76.9f, 39.1f, "Piekarnik nagrzej do temperatury 180 stopni. Na patelni usmaż mięso na maśle klarowanym, dodając do niego pod koniec pieprz, sól i bazylię. Do mięsa dodaj przecier pomidorowy i wodę; wymieszaj i duś na małym ogniu, do odparowania płynu. Dopraw do smaku solą, pieprzem, bazylią i wymieszaj. Przygotuj sos beszamelowy: w garnku rozgrzej masło, dodaj mąki i smaż przez 2 minuty cały czas mieszając. Wlej napój roślinny i mieszaj aby nie powstały grudki. Dopraw do smaku solą i gałką muszkatołową. Na koniec dodaj płatki drożdżowe i wymieszaj. Naczynie żaroodporne wysmaruj tłuszczem, dodaj porcję sosu beszamelowego, połowę makaronu, sos boloński, pozostały makaron i sos beszamelowy. Piecz około 45 minut.", 1, 0, 1, "dinner"));
-        mealRepository.save(new Meal("Makaron gryczany z sosem pomidorowym i bazylią", 384.0f, 7.9f, 66.4f, 11.1f, "Makaron ugotuj wg instrukcji na opakowaniu Pozostałe składniki umieść w garnku, zagotuj. Makaron podawaj z sosem.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Ryba pieczona z frytkami z batatów i surówką", 559.0f, 32.2f, 67.8f, 20.1f, "Piekarnik nagrzej do 190 stopni. Batata pokrój w cienkie paski. Blaszkę wyłóż papierem do pieczenia dodaj frytki i rybę, skrop oliwą z oliwek i przypraw do smaku. Piecz około 20 minut. Przygotuj surówkę: kapustę posiekaj, jabłko i marchew zetrzyj, wymieszaj, skrop oliwą i sokiem z cytryny. Rybę podawaj z frytkami i surówką.", 1, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Tortilla kukurydziana z mozzarellą, hummusem i warzywami", 412.0f, 20.7f, 54.9f, 13.2f, "Warzywa pokrój w kostkę. Tortillę posmaruj hummusem. Na tortillę nałóż wszystkie składniki, posyp startą mozzarellą i zwiń.", 0, 1, 1, "dinner"));
-        mealRepository.save(new Meal("Bezglutenowy wege wrap", 497.0f, 24.1f, 61.0f, 19.7f, "Placki: Wymieszaj mąkę z ziołami, gorącą wodą, oliwą, szczypiorkiem i zagnieć ciasto. Rozwałkuj na placek i smaż na rumiano na suchej patelni. Warzywa pokrój, zioła posiekaj. Na usmażone placki układaj dodatki - warzywa i tofu. Polej sosem: jogurt + przyprawy + musztarda. Wrapa zawiń.", 0, 0, 1, "dinner"));
-        mealRepository.save(new Meal("Kawowy shake proteinowy", 717.0f, 1.0f, 97.1f, 19.4f, "Kawę zaparz i ostudź. Wszystkie składniki zblenduj na koktajl.", 0, 1, 1, "breakfast"));
+        mealRepository.save(new Meal("Risotto dyniowe z kurczakiem", 652.0f, 43.6f, 70.1f, 23.3f, "Mięso i dynię pokrój w kostkę. W garnku zagotuj bulion i podgrzej mleko. Cebulę posiekaj i podsmaż na niewielkim ogniu na maśle. Następnie dodaj mięso i obsmażaj z obu stron. Dodaj dynię i smaż około 2 minuty. Wsyp ryż, wymieszaj i całość zalej bulionem (możesz to robić stopniowo). Dodaj przyprawy. Na koniec dodaj starty ser, śmietanę i wymieszaj.", 1, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Makaron z tofu i pomidorami", 493.0f, 22.2f, 70.7f, 17.3f, "Makaron ugotuj al dente wg instrukcji na opakowaniu. Tofu pokrój w małą kostkę. Pomidory suszone pokrój w drobne paseczki, natomiast pomidory koktajlowe przerój na pół. Na rozgrzaną patelnię wlej oliwę, dodaj tofu, pomidory i przyprawy. Duś pod przykryciem ok. 7 minut. Świeże zioła posiekaj. Makaron podawaj z zawartością patelni posypane ziołami.", 0, 1, 0, "dinner"));
+        mealRepository.save(new Meal("Indyk z brokułem w sosie sojowym", 448.0f, 30.4f, 9.6f, 32.4f, "Na patelni rozgrzej olej kokosowy. Dodaj mięso. Smaż, aż straci swój różowy kolor. Pokrój brokuł na małe kawałki. Imbir zetrzyj lub drobno posiekaj. Świeże zioła posiekaj. Dodaj wszystkie składniki do mięsa i duś pod przykryciem ok. 15-20 minut, aż brokuł będzie mięki.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Ryż z warzywami i jajkiem sadzonym", 563.0f, 21.6f, 49.8f, 30.9f, "Ryż ugotuj. Warzywa pokrój w drobną kostkę i podsmaż na patelni. Gdy warzywa będą miękkie, dodaj ryż, przyprawy i całość wymieszaj. Usmaż sadzone jajka i podawaj z warzywnym ryżem. Posyp posiekaną natką i pestkami dyni.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Curry z tofu w mleczku kokosowym z ryżem", 533.0f, 16.2f, 59.5f, 28.2f, "Ryż i fasolkę ugotuj. Tofu pokrój w kostkę i przypraw do smaku. Podsmaż na patelni. Paprykę i marchewkę pokrój w drobną kostkę i wrzuć na patelnię. Dodaj sos sojowy i krótko podsmażaj aż warzywa zmiękną. Możesz dolać trochę wody. Na koniec wlej mleczko kokosowe, dodaj ugotowaną fasolę, wymieszaj i zagotuj. Curry podawaj z ryżem.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Kotlety z soczewicy, kaszy jaglanej z kapustą kiszoną", 611.0f, 22.8f, 92.6f, 19.2f, "Piekarnik nagrzej do temperatury 180 stopni. Soczewicę oraz kaszę jaglaną ugotuj wg instrukcji na opakowaniu. Świeże zioła posiekaj. Kaszę, soczewicę, mąkę, zioła oraz przyprawy zblenduj. Formuj z masy małe kulki, układaj na blaszce do pieczenia wyłożonej papierem, a następnie spłaszcz do formy kotleta. Piecz ok 15 minut lub do zarumienienia. Kapustę połącz z olejem. Kotlety podawaj z kapustą kiszoną.", 0, 1, 0, "dinner"));
+        mealRepository.save(new Meal("Łosoś pieczony z warzywami i chrupkami z ciecierzycy", 720.0f, 48.0f, 23.5f, 49.5f, "Piekarnik nagrzej do 190 stopni. Łososia i ciecierzycę skrop oliwą, przypraw do smaku pieprzem, słodką papryką i solą. Rybę i ciecierzycę połóż na papierze do pieczenia i piecz przez 15 minut. Przygotuj sałatkę: ogórka pokrój w plasterki, pomidorki przekrój na pół, sałatę porwij. Wymieszaj wszystkie składnik i skrop olejem lnianym. Przypraw do smaku i posyp ciecierzycą. Rybę podawaj z sałatką.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Sałatka z soczewicy z halloumi", 996.0f, 46.1f, 57.5f, 64.0f, "Grzyby i ser pokrój. Na patelni rozgrzej olej, dodaj grzyby i podsmażaj, aż się zarumienią. Następnie dodaj ser i chilli. Pozostałe warzywa pokrój. Soczewicę odcedź. Wszystkie składniki połącz w misce wraz z przyprawami oraz oliwą.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Gulasz z soczewicy z ziemniakami i groszkiem", 705.0f, 50.8f, 71.0f, 23.8f, "Warzywa obierz i pokrój w kostkę. Zioła posiekaj i zostaw na koniec do posypania gotowego dania. Mięso pokrój w kostkę. Do garnka wlej oliwę, dodaj mięso i lekko podsmaż. Dodaj pozostałe składniki. Duś pod przykryciem przez 20 min na średniej mocy palnika. Wyłożone na talerz danie posyp ziołami.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Sałatka z burakiem, komosą ryżową i pestkami dyni", 681.0f, 20.3f, 73.6f, 34.9f, "Komosę ugotuj wg instrukcji na opakowaniu, wyłóż na talerz aby wystygła. Warzywa pokrój. Wymieszaj wszystkie składniki z olejem i pestkami.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Zupa koperkowa z klopsikami", 474.0f, 36.3f, 46.9f, 16.5f, "Mięso włóż do miski, dodaj mąkę, posiekaną pietruszkę, sól i pieprz. Wymieszaj, uformuj małe kulki i obtocz je delikatnie w mące. Do garnka wrzuć pokrojonego w kostkę ziemniaka, pietruszkę i marchewkę. Zalej warzywa gorącym bulionem i gotuj ok. 10 minut. Dodaj klopsiki, masło klarowane i gotuj kolejne 15 minut. Dodaj posiekany koperek, podgotowuj jeszcze chwilę. Dopraw do smaku solą i pieprzem.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Zapiekany makaron bezglutenowy", 829.0f, 42.4f, 76.9f, 39.1f, "Piekarnik nagrzej do temperatury 180 stopni. Na patelni usmaż mięso na maśle klarowanym, dodając do niego pod koniec pieprz, sól i bazylię. Do mięsa dodaj przecier pomidorowy i wodę; wymieszaj i duś na małym ogniu, do odparowania płynu. Dopraw do smaku solą, pieprzem, bazylią i wymieszaj. Przygotuj sos beszamelowy: w garnku rozgrzej masło, dodaj mąki i smaż przez 2 minuty cały czas mieszając. Wlej napój roślinny i mieszaj aby nie powstały grudki. Dopraw do smaku solą i gałką muszkatołową. Na koniec dodaj płatki drożdżowe i wymieszaj. Naczynie żaroodporne wysmaruj tłuszczem, dodaj porcję sosu beszamelowego, połowę makaronu, sos boloński, pozostały makaron i sos beszamelowy. Piecz około 45 minut.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Makaron gryczany z sosem pomidorowym i bazylią", 384.0f, 7.9f, 66.4f, 11.1f, "Makaron ugotuj wg instrukcji na opakowaniu Pozostałe składniki umieść w garnku, zagotuj. Makaron podawaj z sosem.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Ryba pieczona z frytkami z batatów i surówką", 559.0f, 32.2f, 67.8f, 20.1f, "Piekarnik nagrzej do 190 stopni. Batata pokrój w cienkie paski. Blaszkę wyłóż papierem do pieczenia dodaj frytki i rybę, skrop oliwą z oliwek i przypraw do smaku. Piecz około 20 minut. Przygotuj surówkę: kapustę posiekaj, jabłko i marchew zetrzyj, wymieszaj, skrop oliwą i sokiem z cytryny. Rybę podawaj z frytkami i surówką.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Tortilla kukurydziana z mozzarellą, hummusem i warzywami", 412.0f, 20.7f, 54.9f, 13.2f, "Warzywa pokrój w kostkę. Tortillę posmaruj hummusem. Na tortillę nałóż wszystkie składniki, posyp startą mozzarellą i zwiń.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Bezglutenowy wege wrap", 497.0f, 24.1f, 61.0f, 19.7f, "Placki: Wymieszaj mąkę z ziołami, gorącą wodą, oliwą, szczypiorkiem i zagnieć ciasto. Rozwałkuj na placek i smaż na rumiano na suchej patelni. Warzywa pokrój, zioła posiekaj. Na usmażone placki układaj dodatki - warzywa i tofu. Polej sosem: jogurt + przyprawy + musztarda. Wrapa zawiń.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Kawowy shake proteinowy", 717.0f, 1.0f, 97.1f, 19.4f, "Kawę zaparz i ostudź. Wszystkie składniki zblenduj na koktajl.", 0, 0, 1, "breakfast"));
+//        STOP HERE
+//        SELECT
+//        i.ingredient_name
+//        FROM meal m
+//        JOIN meal_ingredient mi
+//        ON m.meal_id = mi.meal_id
+//        JOIN ingredient i
+//        ON i.ingredient_id = mi.ingredient_id
+//        WHERE meal_name = "Kawowy shake proteinowy";
         mealRepository.save(new Meal("Grzanki z burratą i pomidorkami", 473.0f, 14.7f, 47.6f, 26.7f, "Bułkę przekrój na pół i podgrzej na suchej patelni. Pomidorki pokrój na mniejsze kawałki i podsmaż na patelni. Przypraw do smaku. Na grzanki nałóż pomidorki, plasterki burraty i udekoruj bazylią.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Owsianka ze śliwkami, czekoladą i odżywką", 857.0f, 1.0f, 110.6f, 25.9f, "Płatki wsyp do garnka i zalej mlekiem. Gotuj do miękkości. W międzyczasie wrzuć połamaną czekoladę i mieszaj aż się rozpuści. Owsiankę przełóż do miski i odstaw na 5 minut, aby lekko ostygła. Dodaj odżywkę i wymieszaj. Owsiankę podawaj z dodatkami.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Wysokokaloryczny shake owocowy z malinami", 871.0f, 46.8f, 120.6f, 25.1f, "Banany obierz. Wszystkie składniki zblenduj na gładki koktajl.", 0, 1, 1, "breakfast"));
@@ -66,7 +78,7 @@ public class MealService {
         mealRepository.save(new Meal("Jajecznica z kurkami z pieczywem bezglutenowym", 502.0f, 18.8f, 43.2f, 29.2f, "Cebulę posiekaj i zeszklij na patelni. Dodaj posiekane pomidory i oczyszczone i umyte kurki. Smaż aż kurki zmiękną i odparuje woda. Wbij jajka i smaż do uzyskania odpowiedniej konsystencji. Jajecznicę podawaj na pieczywie.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Jajecznica z kurkami na grahamce", 529.0f, 23.6f, 54.5f, 26.9f, "Cebulę posiekaj i zeszklij na patelni. Dodaj posiekane pomidory i oczyszczone i umyte kurki. Smaż aż kurki zmiękną i odparuje woda. Wbij jajka i smaż do uzyskania odpowiedniej konsystencji. Jajecznicę podawaj na bułce.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Szakszuka z kurkami", 345.0f, 18.7f, 21.9f, 22.0f, "Cebulę i czosnek posiekaj, pomidory sparz, obierz ze skórki i pokrój w kostkę. Na patelni zeszklij cebulę z czosnkiem, następnie dodaj kurki. Smaż kilka minut i przypraw do smaku. Dodaj pomidory, wymieszaj i smaż bez mieszania około 5 minut, aż odparuj woda. Wbij jajka i smaż pod przykryciem aż białko się zetnie, a żółtko będzie płynne. Na talerzu posyp posiekaną natką.", 0, 1, 1, "breakfast"));
-        mealRepository.save(new Meal("Wysokobiałkowy omlet owsiany", 1104.0f, 42.7f, 167.3f, 33.0f, "Wszystkie składniki zblenduj na gładką masę. Na rozgrzaną patelnię wlej masę i smaż pod przykryciem z obu stron.", 0, 1, 1, "breakfast"));
+        mealRepository.save(new Meal("Wysokobiałkowy omlet owsiany", 1104.0f, 42.7f, 167.3f, 33.0f, "Wszystkie składniki zblenduj na gładką masę. Na rozgrzaną patelnię wlej masę i smaż pod przykryciem z obu stron.", 0, 1, 1, "dinner"));
         mealRepository.save(new Meal("Owsianka bezglutenowa z serkiem wiejskim i owocami", 548.0f, 28.1f, 76.5f, 16.0f, "Do garnka wlej mleko, wsyp płatki, dodaj połówkę pokrojonego w plasterki banana i zagotuj. Owsiankę przełóż do miski, dodaj serek wiejski, owoce i posyp orzechami.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Kanapki z hummusem dyniowym i grillowanym tofu", 438.0f, 15.3f, 67.8f, 13.7f, "Do miski wrzuć puree z dyni, ciecierzycę, tahini, dodaj sok z cytryny i przyprawy. Całość zlenduj na gładką masę. W razie potrzeby dolej trochę wody, aby powstała gładka konsystencja. Tofu pokrój w plasterki i zgrilluj z obu stron. Z podanych składników przygotuj kanapki.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Bezglutenowe gofry dyniowe ze skyrem i owocami", 482.0f, 42.5f, 50.2f, 13.7f, "Do miski wbij jajko, dodaj puree dyniowe, mąkę, odżywkę białkową, cynamon i całość zblenduj na gładką masę. Gofry piecz w nagrzanej i wysmarowanej olejem gofrownicy. Podawaj ze skyrem i owocami.", 0, 0, 1, "breakfast"));
@@ -95,63 +107,64 @@ public class MealService {
         mealRepository.save(new Meal("Owsianka bezglutenowa z bananem", 501.0f, 19.0f, 71.9f, 16.6f, "Płatki ugotuj na mleku. Owsiankę podawaj z pozostałymi składnikami.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Ryż z borówkami i jogurtem kokosowym", 318.0f, 4.0f, 64.0f, 3.3f, "Ryż ugotuj wg wskazówek na opakowaniu. Owoce wymieszaj z jogurtem i miodem. Ugotowany ryż podawaj owocami.", 0, 1, 1, "breakfast"));
 
-        mealRepository.save(new Meal("Musli bez laktozy", 471.0f, 14.5f, 59.9f, 21.6f, "Owoce obierz i pokrój na małe kawałki. Wymieszaj wszystkie składniki.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Jaglanka bez laktozy z owocami", 422.0f, 17.1f, 52.9f, 16.5f, "Kaszę opłucz na sitku i ugotuj na mleku. Gdy kasza wchłonie mleko, przełóż jaglankę do miski i dodaj pozostałe składniki.", 0,  1, 0, "breakfast"));
-        mealRepository.save(new Meal("Jaglanka z bananem bez laktozy", 446.0f, 15.6f, 62.5f, 16.2f, "Kaszę przepłucz na sitku i ugotuj na mleku. Następnie zmiksuj z bananem. Posyp posiekaną czekoladą i polej masłem.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Ryżanka truskawkowa bez laktozy", 423.0f, 14.2f, 67.1f, 12.7f, "Ryż ugotuj na mleku. Owoce pokrój w kostkę. Orzechy posiekaj i udekoruj nimi ryżankę.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Twarożek bez laktozy z pieczywem", 266.0f, 23.8f, 19.4f, 10.5f, "Z podanych składników przygotuj kanapki.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Musli z jogurtem bez laktozy i kiwi", 337.0f, 12.3f, 47.4f, 12.5f, "Wymieszaj wszystkie składniki.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Kasza z cukinią i serem bez laktozy", 457.0f, 12.2f, 40.5f, 29.2f, "Kaszę ugotuj. Cebulę usmaż na oleju. Dodaj resztę składników. Całość połącz z kaszą.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Ryż bez laktozy z sosem truskawkowym", 384.0f, 14.6f, 69.2f, 6.6f, "Ryż ugotuj na mleku, co jakiś czas mieszając. Truskawki zmiksuj z jogurtem. Ugotowany ryż podawaj z sosem truskawkowym.", 0, 1, 0, "breakfast"));
+        mealRepository.save(new Meal("Musli bez laktozy", 471.0f, 14.5f, 59.9f, 21.6f, "Owoce obierz i pokrój na małe kawałki. Wymieszaj wszystkie składniki.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Jaglanka bez laktozy z owocami", 422.0f, 17.1f, 52.9f, 16.5f, "Kaszę opłucz na sitku i ugotuj na mleku. Gdy kasza wchłonie mleko, przełóż jaglankę do miski i dodaj pozostałe składniki.", 0,  0, 0, "breakfast"));
+        mealRepository.save(new Meal("Jaglanka z bananem bez laktozy", 446.0f, 15.6f, 62.5f, 16.2f, "Kaszę przepłucz na sitku i ugotuj na mleku. Następnie zmiksuj z bananem. Posyp posiekaną czekoladą i polej masłem.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Ryżanka truskawkowa bez laktozy", 423.0f, 14.2f, 67.1f, 12.7f, "Ryż ugotuj na mleku. Owoce pokrój w kostkę. Orzechy posiekaj i udekoruj nimi ryżankę.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Twarożek bez laktozy z pieczywem", 266.0f, 23.8f, 19.4f, 10.5f, "Z podanych składników przygotuj kanapki.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Musli z jogurtem bez laktozy i kiwi", 337.0f, 12.3f, 47.4f, 12.5f, "Wymieszaj wszystkie składniki.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Kasza z cukinią i serem bez laktozy", 457.0f, 12.2f, 40.5f, 29.2f, "Kaszę ugotuj. Cebulę usmaż na oleju. Dodaj resztę składników. Całość połącz z kaszą.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Ryż bez laktozy z sosem truskawkowym", 384.0f, 14.6f, 69.2f, 6.6f, "Ryż ugotuj na mleku, co jakiś czas mieszając. Truskawki zmiksuj z jogurtem. Ugotowany ryż podawaj z sosem truskawkowym.", 0, 0, 0, "breakfast"));
         mealRepository.save(new Meal("Owsianka nesquik z owocami bez laktozy", 516.0f, 19.7f, 80.0f, 14.6f, "Płatki ugotuj na mleku. Podawaj z dodatkami.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Jaglanka bez laktozy z musem truskawkowym", 419.0f, 17.3f, 61.6f, 13.2f, "Kaszę opłucz pod bieżącą wodą, przelej na sitku wrzątkiem i zalej mlekiem. Gotuj do momentu aż kasza wchłonie cały płyn. Truskawki podgrzej w garnku na mus. Jaglankę polej musem truskawkowym i masłem orzechowym.", 0, 1, 0, "breakfast"));
+        mealRepository.save(new Meal("Jaglanka bez laktozy z musem truskawkowym", 419.0f, 17.3f, 61.6f, 13.2f, "Kaszę opłucz pod bieżącą wodą, przelej na sitku wrzątkiem i zalej mlekiem. Gotuj do momentu aż kasza wchłonie cały płyn. Truskawki podgrzej w garnku na mus. Jaglankę polej musem truskawkowym i masłem orzechowym.", 0, 0, 0, "breakfast"));
         mealRepository.save(new Meal("Burakowe naleśniki z jogurtem bez laktozy", 559.0f, 19.8f, 68.9f, 23.8f, "Ugotuj buraka. Podane składniki zblenduj ze sobą i usmaż naleśniki na rozgrzanej patelni. Na wierzch naleśników nałóż kleks jogurtu.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Musli z mandarynką i jogurtem bez laktozy", 314.0f, 9.7f, 57.6f, 6.6f, "Mandarynki obierz i podziel na małe kawałki. Wymieszaj wszystkie składniki.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Bezglutenowy wrap z drobiem i sosem bez laktozy", 555.0f, 23.9f, 61.6f, 26.0f, "Mięso pokrój w kostkę, przypraw i podsmaż na patelni. Placki : Mąkę wymieszaj z ziołami, gorącą wodą, oliwą, szczypiorkiem. Zagnieć ciasto. Smaż na rumiano na suchej patelni. Na usmażone placki układaj dodatki. Polej sosem: jogurt + przyprawy + musztarda.", 1, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z sosem dyniowym bez laktozy", 504.0f, 14.2f, 75.9f, 17.4f, "Makaron ugotuj al'dente. Paprykę pokrój w kostkę, czosnek posiekaj i warzywa zeszklij na patelni. Przypraw pieprzem i solą. Zblenduj puree z dyni z masłem orzechowym, mlekiem i przyprawami. Na patelnię dodaj ugotowany makaron i wlej sos. Całość wymieszaj. Na talerzu posyp pokruszonym serem.", 0, 1, 0, "breakfast"));
+        mealRepository.save(new Meal("Musli z mandarynką i jogurtem bez laktozy", 314.0f, 9.7f, 57.6f, 6.6f, "Mandarynki obierz i podziel na małe kawałki. Wymieszaj wszystkie składniki.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Bezglutenowy wrap z drobiem i sosem bez laktozy", 555.0f, 23.9f, 61.6f, 26.0f, "Mięso pokrój w kostkę, przypraw i podsmaż na patelni. Placki : Mąkę wymieszaj z ziołami, gorącą wodą, oliwą, szczypiorkiem. Zagnieć ciasto. Smaż na rumiano na suchej patelni. Na usmażone placki układaj dodatki. Polej sosem: jogurt + przyprawy + musztarda.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z sosem dyniowym bez laktozy", 504.0f, 14.2f, 75.9f, 17.4f, "Makaron ugotuj al'dente. Paprykę pokrój w kostkę, czosnek posiekaj i warzywa zeszklij na patelni. Przypraw pieprzem i solą. Zblenduj puree z dyni z masłem orzechowym, mlekiem i przyprawami. Na patelnię dodaj ugotowany makaron i wlej sos. Całość wymieszaj. Na talerzu posyp pokruszonym serem.", 0, 0, 0, "dinner"));
         mealRepository.save(new Meal("Kanapki z serkiem Almette bez laktozy z tuńczykiem", 422.0f, 25.5f, 47.5f, 16.3f, "Z podanych składników przygotuj kanapki.", 1, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Jesienna owsianka z duszonymi śliwkami bez laktozy", 491.0f, 15.0f, 79.8f, 14.6f, "Płatki zalej gorącą wodą i odstaw do napęcznienia. Następnie gdy płatki wchłoną wodę, dodaj jogurt, kakao, posłodź do smaku i wymieszaj. Śliwki pokrój w kostkę i podduś w garnku z niewielką ilością wody. Dodaj cynamon. Owsiankę podawaj ze śliwkami i posyp orzechami.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Makaron z cukinią z ciecierzycą i serem bez laktozy", 441.0f, 13.5f, 45.1f, 25.2f, "Makaron ugotuj. Cebulę przesmaż na oleju. Dodaj resztę składników. Połącz całość z makaronem.", 0, 1, 0, "breakfast"));
+        mealRepository.save(new Meal("Jesienna owsianka z duszonymi śliwkami bez laktozy", 491.0f, 15.0f, 79.8f, 14.6f, "Płatki zalej gorącą wodą i odstaw do napęcznienia. Następnie gdy płatki wchłoną wodę, dodaj jogurt, kakao, posłodź do smaku i wymieszaj. Śliwki pokrój w kostkę i podduś w garnku z niewielką ilością wody. Dodaj cynamon. Owsiankę podawaj ze śliwkami i posyp orzechami.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Makaron z cukinią z ciecierzycą i serem bez laktozy", 441.0f, 13.5f, 45.1f, 25.2f, "Makaron ugotuj. Cebulę przesmaż na oleju. Dodaj resztę składników. Połącz całość z makaronem.", 0, 1, 0, "dinner"));
         mealRepository.save(new Meal("Pieczone paprykowe kulki ziemniaczane z serem bez laktozy", 542.0f, 21.7f, 91.8f, 10.7f, "Piekarnik nagrzej do temperatury 180°C. Ugotowane ziemniaki przeciśnij przez praskę. Dodaj resztę składników i zagnieć jak ciasto. Uformuj kulki i wyłóż na blachę. Piecz do zarumienienia około 15-20 minut.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Bezglutenowe pieczywo z zieloną pastą jajeczną bez laktozy", 385.0f, 19.4f, 38.6f, 17.0f, "Jajka ugotuj na twardo. Wszystkie składniki zblenduj na pastę. Posmaruj chleb pastą. Podawaj z rzodkiewką, pomidorami i sałatą.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Kasza zapiekana z brokułem i kalafiorem z jogurtem bez laktozy", 348.0f, 21.0f, 49.3f, 9.3f, "Kaszę i warzywa ugotuj krócej niż to zalecane na opakowaniach. Jajko zmiksuj z jogurtem i przyprawami. Wyłóż do naczynia kaszę, ułóż warzywa i polej jogurtem. Piecz w 180 stopniach przez około 30 minut. Posyp danie szczypiorkiem.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Kasza zapiekana z brokułem i kalafiorem z jogurtem bez laktozy i mięsem", 417.0f, 36.0f, 49.3f, 10.2f, "Kaszę i warzywa ugotuj krócej niż to zalecane na opakowaniach. Mięso pokrój i usmaż na beztłuszczowej patelni. Jajko zmiksuj z jogurtem i przyprawami. Wyłóż do naczynia kaszę, ułóż warzywa, mięso i polej jogurtem. Piecz w 180 stopniach przez około 30 minut. Posyp danie szczypiorkiem.", 1, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z cukinią, kiełbasą żywiecką i serem bez laktozy", 510.0f, 13.3f, 67.0f, 22.3f, "Makaron ugotuj wg instrukcji na opakowaniu. Pokrojoną w drobną kostkę kiełbasą przesmaż na oliwie. Warzywa pokrój i dodaj do kiełbasy. Dodaj pozostałe składniki. Połącz całość z makaronem.", 1, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Knedle z tofu z suszonymi śliwkami z dodatkiem owoców i jogurtem bez laktozy", 400.0f, 17.3f, 54.0f, 12.7f, "Wszystkie składniki zblenduj. Uformuj kulki, wrzuć do gorącej wody i gotuj 2-3 minuty. Podawaj z owocami i jogurtem.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Pieczone bataty z prażoną ciecierzycą, pomidorami i sosem czosnkowym bez laktozy", 284.0f, 9.9f, 56.9f, 2.9f, "Piekarnik nagrzej do temperatury 200°C. Batata przekrój na pół. Ułóż na blasze do pieczenia. Piecz 25 minut. Ciecierzycę wypłucz z zalewy, osusz i oprósz przyprawami. Wyłóż ciecierzycę w formie do pieczenia i włóż do piekarnika razem z batatami. Czosnek przeciśnij przez praskę, dodaj do jogurtu. Dopraw. Na wydrążony środek batata wyłóż wszystkie składniki.", 0, 1, 0, "breakfast"));
-        mealRepository.save(new Meal("Bezglutenowy omlet ryżowy", 318.0f, 10.4f, 33.9f, 16.1f, "Ryż ugotuj. Jajko wbij do miski i ubij. Przypraw do smaku. Pomidora pokrój w kostkę. Do ugotowanego oraz ostudzonego ryżu dodaj ubite jajko, mąkę kukurydzianą i pokrojonego pomidora. Całość delikatnie wymieszaj. Masę przelej na rozgrzany na patelni olej i smaż do uzyskania złotego koloru po obu stronach. Wierzch udekoruj szczypiorkiem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z tofu", 501.0f, 17.2f, 76.0f, 16.6f, "Makaron i brokuł gotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i tofu. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z bobem", 496.0f, 15.4f, 80.3f, 14.7f, "Makaron ugotuj według instrukcji na opakowaniu. Bób ugotuj i obierz. Na patelni z dodatkiem masła podsmaż cukinię, następnie dodaj bób. Dopraw według uznania. Warzywa wymieszaj z makaronem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Spaghetti bezglutenowe z tofu", 402.0f, 12.4f, 56.6f, 15.0f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę zeszklij. Dodaj tofu, a po chwili resztę składników. Duś, aż warzywa będą miękkie. Podawaj wymieszane z makaronem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Kanapka bezglutenowa z miodem", 148.0f, 0.6f, 31.7f, 1.7f, "Przygotuj kanapkę.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Naleśnik bezglutenowy z dżemem", 952.0f, 36.8f, 106.7f, 44.7f, "Składniki zmiksuj lub zblenduj (poza dżemem). Patelnie rozgrzej. Wlej część powstałej masy i smaż do zarumienienia z obu stron. Zjedz z dodatkami.", 0, 0, 1, "breakfast"));
+        mealRepository.save(new Meal("Bezglutenowe pieczywo z zieloną pastą jajeczną bez laktozy", 385.0f, 19.4f, 38.6f, 17.0f, "Jajka ugotuj na twardo. Wszystkie składniki zblenduj na pastę. Posmaruj chleb pastą. Podawaj z rzodkiewką, pomidorami i sałatą.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Kasza zapiekana z brokułem i kalafiorem z jogurtem bez laktozy", 348.0f, 21.0f, 49.3f, 9.3f, "Kaszę i warzywa ugotuj krócej niż to zalecane na opakowaniach. Jajko zmiksuj z jogurtem i przyprawami. Wyłóż do naczynia kaszę, ułóż warzywa i polej jogurtem. Piecz w 180 stopniach przez około 30 minut. Posyp danie szczypiorkiem.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Kasza zapiekana z brokułem i kalafiorem z jogurtem bez laktozy i mięsem", 417.0f, 36.0f, 49.3f, 10.2f, "Kaszę i warzywa ugotuj krócej niż to zalecane na opakowaniach. Mięso pokrój i usmaż na beztłuszczowej patelni. Jajko zmiksuj z jogurtem i przyprawami. Wyłóż do naczynia kaszę, ułóż warzywa, mięso i polej jogurtem. Piecz w 180 stopniach przez około 30 minut. Posyp danie szczypiorkiem.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z cukinią, kiełbasą żywiecką i serem bez laktozy", 510.0f, 13.3f, 67.0f, 22.3f, "Makaron ugotuj wg instrukcji na opakowaniu. Pokrojoną w drobną kostkę kiełbasą przesmaż na oliwie. Warzywa pokrój i dodaj do kiełbasy. Dodaj pozostałe składniki. Połącz całość z makaronem.", 1, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Knedle z tofu z suszonymi śliwkami z dodatkiem owoców i jogurtem bez laktozy", 400.0f, 17.3f, 54.0f, 12.7f, "Wszystkie składniki zblenduj. Uformuj kulki, wrzuć do gorącej wody i gotuj 2-3 minuty. Podawaj z owocami i jogurtem.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Pieczone bataty z prażoną ciecierzycą, pomidorami i sosem czosnkowym bez laktozy", 284.0f, 9.9f, 56.9f, 2.9f, "Piekarnik nagrzej do temperatury 200°C. Batata przekrój na pół. Ułóż na blasze do pieczenia. Piecz 25 minut. Ciecierzycę wypłucz z zalewy, osusz i oprósz przyprawami. Wyłóż ciecierzycę w formie do pieczenia i włóż do piekarnika razem z batatami. Czosnek przeciśnij przez praskę, dodaj do jogurtu. Dopraw. Na wydrążony środek batata wyłóż wszystkie składniki.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Bezglutenowy omlet ryżowy", 318.0f, 10.4f, 33.9f, 16.1f, "Ryż ugotuj. Jajko wbij do miski i ubij. Przypraw do smaku. Pomidora pokrój w kostkę. Do ugotowanego oraz ostudzonego ryżu dodaj ubite jajko, mąkę kukurydzianą i pokrojonego pomidora. Całość delikatnie wymieszaj. Masę przelej na rozgrzany na patelni olej i smaż do uzyskania złotego koloru po obu stronach. Wierzch udekoruj szczypiorkiem.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z tofu", 501.0f, 17.2f, 76.0f, 16.6f, "Makaron i brokuł gotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i tofu. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z bobem", 496.0f, 15.4f, 80.3f, 14.7f, "Makaron ugotuj według instrukcji na opakowaniu. Bób ugotuj i obierz. Na patelni z dodatkiem masła podsmaż cukinię, następnie dodaj bób. Dopraw według uznania. Warzywa wymieszaj z makaronem.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Spaghetti bezglutenowe z tofu", 402.0f, 12.4f, 56.6f, 15.0f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę zeszklij. Dodaj tofu, a po chwili resztę składników. Duś, aż warzywa będą miękkie. Podawaj wymieszane z makaronem.", 0, 0, 0, "dinner"));
+        mealRepository.save(new Meal("Kanapka bezglutenowa z miodem", 148.0f, 0.6f, 31.7f, 1.7f, "Przygotuj kanapkę.", 0, 0, 0, "breakfast"));
+        mealRepository.save(new Meal("Naleśnik bezglutenowy z dżemem", 952.0f, 36.8f, 106.7f, 44.7f, "Składniki zmiksuj lub zblenduj (poza dżemem). Patelnie rozgrzej. Wlej część powstałej masy i smaż do zarumienienia z obu stron. Zjedz z dodatkami.", 0, 0, 0, "dinner"));
+       //
         mealRepository.save(new Meal("Jabłko w cieście bezglutenowym", 445.0f, 15.7f, 51.9f, 20.9f, "Jabłko obierz, wydrąż (tak, aby w środku jabłek był otwór), pokrój w cienkie plasterki. Mąki, mleko, cukier oraz jajko wymieszaj. Następnie dodaj szczyptę soli i cynamon. Zmiksuj na gładką masę. Plastry jabłka zanurz w cieście i usmaż na oleju.", 1, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Bezglutenowa tortilla z warzywami", 393.0f, 10.4f, 56.9f, 15.7f, "Warzywa pokrój. Tortillę posmaruj oliwą, dodaj sałatę, warzywa i ciecierzycę. Zgrilluj z obu stron.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Placuszki szpinakowe bezglutenowe", 440.0f, 16.1f, 54.9f, 18.1f, "Szpinak zblenduj i połącz z resztą składników (oprócz oleju). Na rozgrzaną patelnię wlej olej i smaż placuszki.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z tofu i serem", 574.0f, 23.8f, 76.0f, 21.7f, "Makaron i brokuł gotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i tofu. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 0, 0, 1, "breakfast"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z tofu i serem", 574.0f, 23.8f, 76.0f, 21.7f, "Makaron i brokuł gotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i tofu. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 0, 0, 1, "dinner"));
         mealRepository.save(new Meal("Tost bezglutenowy z serem i warzywami", 388.0f, 13.1f, 54.0f, 11.7f, "Chleb opiecz w tosterze. Na ciepły tost połóż plasterki sera i ogórka.", 1, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Burger vege z bagietką bezglutenową", 448.0f, 12.8f, 79.3f, 10.0f, "Piekarnik nagrzej na 200 stopni, użyć tryb termoobieg Marchew, pietruszkę, ziemniak, seler obierz, pokrój, ułóż na blaszce wyłożonej papierem i piec przez 25 minut Soczewicę ugotuj. Warzywa zblenduj i połącz z soczewicą i olejem. dodaj sól, pieprz, płatki i paprykę. Z masy uformuj 3 kotlety i piec je w piekarniku przez 10 minut w trybie termoobiegu. Bagietkę podpiecz, przekrój i posmaruj majonezem. Na połówce bułki ułóż liść sałaty, warzywa i kotlet. Połóż drugą połówkę bagietki.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Pieczone bezglutenowe kulki ziemniaczane", 479.0f, 14.5f, 92.1f, 7.5f, "Piekarnik nagrzej do temperatury 180°C. Ugotowane ziemniaki przeciśnij przez praskę. Dodaj resztę składników i zagnieć jak ciasto. Uformuj kulki i wyłóż na blachę. Piecz do zarumienienia około 15-20 minut.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Makaron bezglutenowy z miso i kurczakiem", 414.0f, 29.2f, 44.2f, 13.1f, "Makaron ugotuj według instrukcji na opakowaniu. Na patelni z dodatkiem oleju podsmaż papryczki chili, następnie dodaj miso, sos sojowy oraz przyprawy. Mięso podsmaż, następnie dodaj do sosu. Całość wymieszaj z makaronem i posyp szczypiorkiem.", 1, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Kanapki bezglutenowe z hummusem dyniowym", 353.0f, 10.5f, 57.7f, 9.2f, "Do miski wrzuć puree z dyni, ciecierzycę, tahini, dodaj sok z cytryny i przyprawy. Całość zlenduj na gładką masę. W razie potrzeby dolej trochę wody, aby powstała gładka konsystencja. Z podanych składników przygotuj kanapki.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z leczo pomidorowym", 545.0f, 31.5f, 78.8f, 13.3f, "Makaron ugotuj według instrukcji na opakowaniu. Mięso z piersi kurczaka pokrój na kawałki i usmaż, następnie dodaj pokrojoną cukinię. Całość zalej passatą, dopraw według uznania.", 0, 0, 1, "breakfast"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z leczo pomidorowym", 545.0f, 31.5f, 78.8f, 13.3f, "Makaron ugotuj według instrukcji na opakowaniu. Mięso z piersi kurczaka pokrój na kawałki i usmaż, następnie dodaj pokrojoną cukinię. Całość zalej passatą, dopraw według uznania.", 0, 0, 1, "dinner"));
         mealRepository.save(new Meal("Pasta twarogowa z pieczywem bezglutenowym", 283.0f, 23.4f, 36.2f, 4.8f, "Twaróg zmiksuj z jogurtem, bazylią i pietruszką. Dopraw solą i pieprzem. Twarożek podawaj z pieczywem, sałatą i warzywami.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Kokosowa owsianka bezglutenowa z jagodami", 478.0f, 18.0f, 71.7f, 15.7f, "Płatki owsiane gotuj na mleku przez około 5 minut. Dodaj wiórki kokosowe. Gotową owsiankę udekoruj jagodami i suszonymi morelami.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Bezglutenowa kanapka z kremem czekoladowym", 241.0f, 3.7f, 37.7f, 8.7f, "Całość zblenduj. Podawaj z chlebem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z zielonymi warzywami", 337.0f, 7.6f, 43.8f, 16.3f, "Makaron ugotuj wg zaleceń na opakowaniu. Odetnij zdrewniałe końce od szparagów. Pokrój szparagi i cukinię. Bób ugotuj i obierz ze skórki. Na patelni rozgrzej oliwę i wrzuć szparagi oraz cukinię. Dodaj przeciśnięty przez praskę czosnek. Makaron odcedź i przełóż na patelnię razem z bobem. Dopraw do smaku.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z łososiem i orzechami", 613.0f, 25.5f, 78.9f, 23.9f, "Makaron i brokuł ugotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i łososia. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Spaghetti bezglutenowe z cukinią i krewetkami", 444.0f, 28.8f, 58.0f, 12.6f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę zeszklij. Warzywa pokrój i dodaj do cebuli. Dodaj krewetki, a po chwili resztę składników. Duś, aż warzywa będą miękkie. Podawaj wymieszane z makaronem.", 0, 0, 1, "breakfast"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z zielonymi warzywami", 337.0f, 7.6f, 43.8f, 16.3f, "Makaron ugotuj wg zaleceń na opakowaniu. Odetnij zdrewniałe końce od szparagów. Pokrój szparagi i cukinię. Bób ugotuj i obierz ze skórki. Na patelni rozgrzej oliwę i wrzuć szparagi oraz cukinię. Dodaj przeciśnięty przez praskę czosnek. Makaron odcedź i przełóż na patelnię razem z bobem. Dopraw do smaku.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z łososiem i orzechami", 613.0f, 25.5f, 78.9f, 23.9f, "Makaron i brokuł ugotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i łososia. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Spaghetti bezglutenowe z cukinią i krewetkami", 444.0f, 28.8f, 58.0f, 12.6f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę zeszklij. Warzywa pokrój i dodaj do cebuli. Dodaj krewetki, a po chwili resztę składników. Duś, aż warzywa będą miękkie. Podawaj wymieszane z makaronem.", 0, 0, 1, "dinner"));
         mealRepository.save(new Meal("Tofu w sosie sojowym z makaronem bezglutenowym", 647.0f, 18.2f, 108.7f, 16.3f, "Makaron ugotuj wg instrukcji na opakowaniu. Tofu pokrój na kawałki, przełóż do miseczki i obtocz w skrobi ziemniaczanej oraz dopraw solą i pieprzem. Następnie wyłóż na patelnię i smaż po 2-3 minuty z każdej strony. Na tą samą patelnię dodaj czosnek oraz cebulę. Sos sojowy wymieszaj z wodą i syropem klonowym i przelej na patelnię. Następnie dodaj wcześniej usmażone tofu.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Makaron bezglutenowy z twarogiem i truskawkami", 527.0f, 26.0f, 92.6f, 6.9f, "Makaron ugotuj według instrukcji na opakowaniu. Twaróg wymieszaj z jogurtem i miodem, następnie z makaronem. Dodaj umyte i pokrojone truskawki.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Wysokobiałkowa owsianka bezglutenowa z owocami", 578.0f, 34.9f, 75.7f, 15.8f, "Płatki zalej gorącą wodą i odstaw do napęcznienia. Wymieszaj z jogurtem i odżywką. Dodaj owoce i posyp posiekanymi orzechami.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z mozzarellą i pomidorami", 585.0f, 25.2f, 74.5f, 22.1f, "Makaron ugotuj wg wskazówek na opakowaniu. Warzywa pokrój. Zioła posiekaj. Ser pokrój w kostkę. Wszystkie składniki ze sobą wymieszaj.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy ze szpinakiem i pieczarkami", 426.0f, 31.3f, 60.5f, 8.4f, "Makaron ugotuj. Na rozgrzaną patelnię dodaj oliwę i pokrojonego kurczaka. Gdy kurczak będzie prawie gotowy dorzuć na patelnię resztę składników. Kiedy wszystko zmięknie połącz z makaronem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z sosem dyniowym i papryką", 518.0f, 18.0f, 74.5f, 18.0f, "Makaron ugotuj al'dente. Paprykę pokrój w kostkę, czosnek posiekaj i warzywa zeszklij na patelni. Przypraw pieprzem i solą. Zblenduj puree z dyni z masłem orzechowym, mlekiem i przyprawami. Na patelnię dodaj ugotowany makaron i wlej sos. Całość wymieszaj. Na talerzu posyp parmezanem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy w sosie z sera pleśniowego", 525.0f, 13.1f, 66.7f, 23.3f, "Świeże zioła posiekaj. Zostaw część na później. Wszystkie składniki włóż do garnka i gotuj przez 15 min. na średnim ogniu, pod przykryciem od czasu do czasu mieszając. Na dnie pozostanie sos. Zdejmij danie z płyty i pozostaw na chwilę. Po tym czasie zamieszaj. Dodaj pozotałą część ziół.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Makaron bezglutenowy z łososiem i słonecznikiem", 588.0f, 25.2f, 76.8f, 21.7f, "Makaron i brokuł ugotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i łososia. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 1, 0, 1, "breakfast"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z mozzarellą i pomidorami", 585.0f, 25.2f, 74.5f, 22.1f, "Makaron ugotuj wg wskazówek na opakowaniu. Warzywa pokrój. Zioła posiekaj. Ser pokrój w kostkę. Wszystkie składniki ze sobą wymieszaj.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy ze szpinakiem i pieczarkami", 426.0f, 31.3f, 60.5f, 8.4f, "Makaron ugotuj. Na rozgrzaną patelnię dodaj oliwę i pokrojonego kurczaka. Gdy kurczak będzie prawie gotowy dorzuć na patelnię resztę składników. Kiedy wszystko zmięknie połącz z makaronem.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z sosem dyniowym i papryką", 518.0f, 18.0f, 74.5f, 18.0f, "Makaron ugotuj al'dente. Paprykę pokrój w kostkę, czosnek posiekaj i warzywa zeszklij na patelni. Przypraw pieprzem i solą. Zblenduj puree z dyni z masłem orzechowym, mlekiem i przyprawami. Na patelnię dodaj ugotowany makaron i wlej sos. Całość wymieszaj. Na talerzu posyp parmezanem.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy w sosie z sera pleśniowego", 525.0f, 13.1f, 66.7f, 23.3f, "Świeże zioła posiekaj. Zostaw część na później. Wszystkie składniki włóż do garnka i gotuj przez 15 min. na średnim ogniu, pod przykryciem od czasu do czasu mieszając. Na dnie pozostanie sos. Zdejmij danie z płyty i pozostaw na chwilę. Po tym czasie zamieszaj. Dodaj pozotałą część ziół.", 0, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Makaron bezglutenowy z łososiem i słonecznikiem", 588.0f, 25.2f, 76.8f, 21.7f, "Makaron i brokuł ugotuj. Na rozgrzaną patelnię wlej oliwę i przesmażaj cebulę i łososia. Dodaj ugotowany makaron i brokuł, a także resztę składników mieszając i podsmażając jeszcze 2 minuty.", 1, 0, 1, "dinner"));
         mealRepository.save(new Meal("Pasta z cukinii i fasoli z pieczywem bezglutenowym", 477.0f, 13.8f, 66.7f, 18.5f, "Fasolę odsącz z zalewy. Cebulę obierz i pokrój w plastry. Cukinię opłucz i zetrzyj na tarce. Na rozgrzanym oleju podsmaż cebulę, a następnie dodaj startą cukinię. Smaż na małym ogniu, ciągle mieszając aż cukinia zmięknie a woda odparuje. Ściągnij z patelni i odcedź cukinię na sitku. Do ostudzonej cukinii dodaj pozostałe składniki: suszone pomidory, sól, pieprz, szczyptę kurkumy i fasolę. Wszystko zmiksuj na gładką masę. Podawaj z pieczywem.", 0, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Bezglutenowe spaghetti bolognese z mięsem drobiowym", 596.0f, 34.9f, 89.5f, 14.3f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę i czosnek posiekaj i zeszklij na patelni. Dodaj mięso i przypraw do smaku. Marchew zetrzyj i wrzuć na patelnię. Dodaj resztę składników. Duś, aż warzywa będą miękkie. Całość podawaj z makaronem i posyp posiekaną natką pietruszki.", 1, 0, 1, "breakfast"));
-        mealRepository.save(new Meal("Bezglutenowy makaron w sosie pomidorowym z falafelem", 647.0f, 17.8f, 105.4f, 19.7f, "Makaron ugotuj według instrukcji na opakowaniu. Odcedzoną ciecierzycę oraz sól, cebulę, czosnek i sodę zblenduj, aż ciecierzyca zacznie się lepić, kleić. Pod koniec dodaj natkę pietruszki, dopraw według uznania. Formuj małe kuleczki (wielkości małego orzecha włoskiego) lub placuszki i odkładaj na talerz. Rozgrzej olej do ok. 160 stopni C, wkładaa porcjami kulki z ciecierzycy i smaż po około 3 minuty z każdej strony, w połowie smażenia przewrócić na drugą stronię. Na patelni na której smażą się falafele, wlej passatę. Dopraw i trzymaj na ogniu przez kilka minut. Gotowy sos podaj z makaronem.", 0, 0, 1, "breakfast"));
+        mealRepository.save(new Meal("Bezglutenowe spaghetti bolognese z mięsem drobiowym", 596.0f, 34.9f, 89.5f, 14.3f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę i czosnek posiekaj i zeszklij na patelni. Dodaj mięso i przypraw do smaku. Marchew zetrzyj i wrzuć na patelnię. Dodaj resztę składników. Duś, aż warzywa będą miękkie. Całość podawaj z makaronem i posyp posiekaną natką pietruszki.", 1, 0, 1, "dinner"));
+        mealRepository.save(new Meal("Bezglutenowy makaron w sosie pomidorowym z falafelem", 647.0f, 17.8f, 105.4f, 19.7f, "Makaron ugotuj według instrukcji na opakowaniu. Odcedzoną ciecierzycę oraz sól, cebulę, czosnek i sodę zblenduj, aż ciecierzyca zacznie się lepić, kleić. Pod koniec dodaj natkę pietruszki, dopraw według uznania. Formuj małe kuleczki (wielkości małego orzecha włoskiego) lub placuszki i odkładaj na talerz. Rozgrzej olej do ok. 160 stopni C, wkładaa porcjami kulki z ciecierzycy i smaż po około 3 minuty z każdej strony, w połowie smażenia przewrócić na drugą stronię. Na patelni na której smażą się falafele, wlej passatę. Dopraw i trzymaj na ogniu przez kilka minut. Gotowy sos podaj z makaronem.", 0, 0, 1, "dinner"));
         mealRepository.save(new Meal("Owsianka bezglutenowa na napoju roślinnym z bananem", 496.0f, 17.9f, 68.0f, 17.8f, "Płatki ugotuj na mleku roślinnym. Owsiankę podawaj z pozostałymi składnikami.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Pasta z pieczonego batata na pieczywie bezglutenowym", 247.0f, 4.9f, 46.5f, 4.5f, "Piekarnik nagrzej do temperatury 200°C. Batata i dynię obierz i pokrój. Wyłóż do naczynia do zapiekania Piecz 25 min. Cebulę pokrój w kostkę i zeszklij na patelni. Upieczone warzywa zmiksuj z cebulą i ciecierzycą na gładką masę. Dopraw do smaku. Podawaj z pieczywem.", 0, 0, 1, "breakfast"));
 
@@ -598,7 +611,6 @@ public class MealService {
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Kapusta kiszona"), 110));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Jabłko"), 150));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Marchew"), 45));
-        mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Oliwa z oliwek"), 8));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Sok cytrynowy"), 6));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Pieprz czarny mielony"), 1));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Ryba pieczona z frytkami z batatów i surówką"), ingredientRepository.findIngredientByIngredientName("Czosnek granulowany"), 1));
@@ -931,7 +943,7 @@ public class MealService {
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Burak"), 100));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Jajko kurze (całe)"), 56));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Woda"), 30));
-        mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Mleko UHT 1,5%"), 50));
+        mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Mleko bez laktozy 1,5%"), 50));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Mąka pszenna typ 550"), 75));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Olej rzepakowy uniwersalny"), 15));
         mealIngredientRepository.save(new MealIngredient(mealRepository.findMealByMealName("Burakowe naleśniki z jogurtem bez laktozy"), ingredientRepository.findIngredientByIngredientName("Sól biała"), 1));
@@ -1317,59 +1329,110 @@ public class MealService {
         return x;
     }
 
-    public List<Meal> getDiet(){
-        //Meal x = mealRepository.findMealByMealId(id);
-        List<Meal> listOfMeals = new ArrayList<>();
-        //UserProfileDto userProfile = userService.getUserProfile(bearerToken);
+    public void saveDiet(String bearerToken, List<Meal> listOfMeals) {
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+        if(mealKitRepository.existsBy_user(user)){
+            throw new AppException("This username has got diet already!", HttpStatus.BAD_REQUEST);
+        }else {
+            for (Meal meal:listOfMeals) {
+                mealKitRepository.save(new mealKit(user, mealRepository.findMealByMealName(meal.getMealName())));
+            }
+        }
+    }
 
-        //int userCalories = userProfile.getCaloricDemand();
-        int userCalories = 2600;
-        //int dietInfo = userProfile.getDietInfo();
-        int dietInfo = 111;
-        int meat = 1, gluten = 1, lactose = 1;
+    public void deleteDiet(String bearerToken) {
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+//        while (mealKitRepository.existsBy_user(user)) {
+//            mealKitRepository.deleteBy_user(user);
+//        }
+        mealKitRepository.deleteAllBy_user(user);
+    }
 
-        if(dietInfo == 11){
-            meat = 0;
-        } else if (dietInfo == 101){
-            gluten = 0;
-        } else if (dietInfo == 110) {
-            lactose = 0;
-        }else;
-        gluten = 0;
+    public List<Meal> getDiet(String bearerToken){
+        UserProfileDto userProfile = userService.getUserProfile(bearerToken);
+
+        if (userProfile == null) {
+            throw new AppException("This User has no profile!", HttpStatus.BAD_REQUEST);
+        }
+
+        int userCalories = userProfile.getCaloricDemand();
+        int dietInfo = userProfile.getDietInfo();
+
         List<Meal> randomMeals = new ArrayList<>();
         int sumOfCalories = 0, sumOfCarbs = 0, sumOfFats = 0, sumOfProteins = 0;
-        //userCalories > sumOfCalories &&
-        while(!(((userCalories + 100 > sumOfCalories) && (userCalories - 100 < sumOfCalories)) && ((sumOfCarbs * 4 < userCalories * 0.65) && (sumOfCarbs * 4 > userCalories * 0.45)) &&
-                ((sumOfFats * 9 < userCalories * 0.35) && (sumOfFats * 9 > userCalories * 0.2)) &&
-                ((sumOfProteins * 4 < userCalories * 0.35) && (sumOfProteins * 4 > userCalories * 0.15)))) {
+        while(!(((userCalories + 100 > sumOfCalories) && (userCalories - 100 < sumOfCalories)) && ((sumOfCarbs * 4 < userCalories * 0.65) && (sumOfCarbs * 4 > userCalories * 0.50)) &&
+                ((sumOfFats * 9 < userCalories * 0.30) && (sumOfFats * 9 > userCalories * 0.2)) &&
+                ((sumOfProteins * 4 < userCalories * 0.2) && (sumOfProteins * 4 > userCalories * 0.15)))) {
 
             randomMeals.clear();
+
+            List<Integer> rep = new ArrayList<>();
+            int c = 0;
             sumOfCalories = 0;
             sumOfCarbs = 0;
             sumOfFats = 0;
             sumOfProteins = 0;
-            System.out.println("Witam");
-            while(userCalories - 50> sumOfCalories){
-                Meal meal = mealRepository.findRandomByDietInfo(meat, gluten, lactose);
 
-                sumOfCalories += meal.getCalories();
-                sumOfCarbs += meal.getCarbohydrates();
-                sumOfProteins += meal.getProteins();
-                sumOfFats += meal.getFats();
-                randomMeals.add(meal);
+            while(userCalories - 50 > sumOfCalories){
+
+                do {
+                    int b = 0;
+                    Meal meal = mealRepository.findRandom();
+                    switch(dietInfo){
+                        case 111:
+                            meal = mealRepository.findRandom();
+                            break;
+                        case 101:
+                            meal = mealRepository.findRandomGlutenFreeByDietInfo(0);
+                            break;
+                        case 011:
+                            meal = mealRepository.findRandomMeatFreeByDietInfo(0);
+                            break;
+                        case 110:
+                            meal = mealRepository.findRandomLactoseFreeByDietInfo(0);
+                            break;
+                        default:
+                            break;
+                    }
+                    if ("dinner".equals(meal.getCategoryName())) c++;
+
+                    if (c > 1){
+                        c = 1;
+                        continue;
+                    }
+                    if(rep.size() > 0){
+                        for(int x : rep){
+                            if(meal.getMealId() == x) b++;
+                        }
+                        if(b != 0){
+                            continue;
+                        }
+                    }
+
+                    sumOfCalories += meal.getCalories();
+                    sumOfCarbs += meal.getCarbohydrates();
+                    sumOfProteins += meal.getProteins();
+                    sumOfFats += meal.getFats();
+
+                    rep.add(meal.getMealId());
+                    randomMeals.add(meal);
+
+                    break;
+                }while(1 == 1);
         }
     }
+//
+//        System.out.println("Calories: "+ sumOfCalories);
+//
+//        double proteinPercentage = ((double) sumOfProteins * 4) / sumOfCalories;
+//        double carbPercentage = ((double) sumOfCarbs * 4) / sumOfCalories;
+//        double fatPercentage = ((double) sumOfFats * 9) / sumOfCalories;
+//
+//        System.out.println("Proteins: " + (proteinPercentage * 100) + "%");
+//        System.out.println("Carbs: " + (carbPercentage * 100) + "%");
+//        System.out.println("Fats: " + (fatPercentage * 100) + "%");
 
-        System.out.println("Calories: "+ sumOfCalories);
-
-        double proteinPercentage = ((double) sumOfProteins * 4) / sumOfCalories;
-        double carbPercentage = ((double) sumOfCarbs * 4) / sumOfCalories;
-        double fatPercentage = ((double) sumOfFats * 9) / sumOfCalories;
-
-        System.out.println("Proteins: " + (proteinPercentage * 100) + "%");
-        System.out.println("Carbs: " + (carbPercentage * 100) + "%");
-        System.out.println("Fats: " + (fatPercentage * 100) + "%");
-
-        return listOfMeals;
+        saveDiet(bearerToken, randomMeals);
+        return randomMeals;
     }
 }

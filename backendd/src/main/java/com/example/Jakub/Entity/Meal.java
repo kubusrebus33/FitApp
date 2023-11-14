@@ -50,6 +50,9 @@ public class Meal {
     @OneToMany(mappedBy = "meal")
     private List<MealIngredient> ingredientAssoc;
 
+    @OneToMany(mappedBy = "_meal")
+    private List<mealKit> x;
+
     public Meal(String mealName, float calories, float proteins, float carbohydrates, float fats, String recipe, int hasMeat, int hasGluten, int hasLactose, String categoryName) {
         this.mealName = mealName;
         this.calories = calories;

@@ -5,10 +5,51 @@ import { request, getAuthToken } from '../axios_helper.js';
 import Paper from '@mui/material/Paper';
 import "./paperStyles.css";
 // import { IntegrationInstructionsRounded, PausePresentationTwoTone } from "@mui/icons-material";
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 
 const Create = () => {
     const [error, setError] = useState('');
     const [jsonData, setJsonData] = useState({});
+
+    const [weeks, setWeeks] = useState(1);
+    const [days, setDays] = useState(1);
+
+    
+    function valuetext(value) {
+        return `${value}`;
+    }
+
+    function DiscreteSliderSteps() {
+        const [sliderValue, setSliderValue] = useState(1);
+
+        const handleSliderChange = (event, newValue) => {
+            setSliderValue(newValue);
+        };
+
+        const x = (0.005 * jsonData.weight * 1000 * 7.35)/7;
+        const cals = sliderValue * 7700;
+        const z = cals / x;
+        const weeks = Math.floor(z / 7);
+        const days = Math.floor(z % 7);
+
+        return (
+            
+            <Box sx={{ width: 300 }}>
+                <Slider
+                    value={sliderValue}
+                    onChange={handleSliderChange}
+                    step={1}
+                    marks
+                    min={1}
+                    max={20}
+                />
+                <p>Chcę schudnąć: {valuetext(sliderValue)} kg</p>
+               
+                <p>Zajmie to około {weeks} tygodni, {days} dni</p>
+            </Box>
+        );
+    }
 
     function showDiv(divId) {
         var divs = document.querySelectorAll('.content > div'); // Get all content divs
@@ -19,15 +60,26 @@ const Create = () => {
                 divs[i].style.display = 'none'; // Hide other divs
             }
         }
-       
+
         if (Object.keys(jsonData).length === 0) {
             document.querySelector(".dataDisplay").style.display = "none";
-        } else{
+            document.querySelector(".slider").style.display = "none";
+            if(divId === "option1" || divId === "option3"){
+                document.querySelector(".errorDiv").style.display = "block";
+            }
+        } else {
+            if(divId === "option3")document.querySelector(".slider").style.display = "block";
+            
+            document.querySelector(".BmiErr").style.display = "block";
             document.querySelector(".BmiForm").style.display = "none";
             document.querySelector(".errorDiv").style.display = "none";
         }
+
+        if (divId !== "option2") {
+            document.querySelector(".BmiErr").style.display = "none";
+        }
     }
-    
+
     useEffect(() => {
         const fetchData = async () => {
             const AuthToken = getAuthToken();
@@ -103,8 +155,11 @@ const Create = () => {
             return (10 * weight) + (6.25 * height) - (5 * age) - 161;  // Mifflin-St Jeor equation for females
     }
 
-    function finalCaloriesDemand(weight, calories, goal){
-        switch(goal){
+    function finalCaloriesDemand(weight, calories, goal) {
+        // const x = (0.005 * values.weight * 1000 * 7.35);
+        // setCal(x);
+
+        switch (goal) {
             case '1':
                 return calories - (0.005 * values.weight * 1000 * 7.35) / 7;
             case '2':
@@ -115,7 +170,7 @@ const Create = () => {
                 return 0;
         }
     }
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -124,7 +179,7 @@ const Create = () => {
 
         let caloricDemand = countCaloriesDemand(values.weight, values.height, values.age, sex);
         caloricDemand = caloricDemand * CountActivityFactor(activityLevel);
-        
+
         caloricDemand = Math.round(caloricDemand);
         // 1 kg tłuszczu to 7000 - 7700 kcal
 
@@ -232,16 +287,19 @@ const Create = () => {
 
                 <br /><br />
                 <Paper className="menu" elevation={3}>
-                    <h2 onClick={() => showDiv('option1')} className="clickable-text">Istniejący profil</h2>
-                    <h2 onClick={() => showDiv('option2')} className="clickable-text">Dodaj profil użytkownika</h2>
-                    <h2 onClick={() => showDiv('option3')} className="clickable-text">Edytuj zapotrzebowanie kaloryczne</h2>
+                    <h3 onClick={() => showDiv('option1')} className="clickable-text">Istniejący profil</h3>
+                    <h3 onClick={() => showDiv('option2')} className="clickable-text">Dodaj profil użytkownika</h3>
+                    <h3 onClick={() => showDiv('option3')} className="clickable-text">Edytuj zapotrzebowanie kaloryczne</h3>
                 </Paper>
 
                 <Paper className="content" elevation={3}>
-                    <div className="errorDiv" id="option1" style={{ display:"none" }}>
+                    <div className="welcome">
+                        <h1> Profil użytkownika </h1>
+                    </div>
+                    <div className="errorDiv" style={{ display: "none" }}>
                         <h1> Najpierw dodaj swój profil użytkownika!</h1>
                     </div>
-                    <div className="dataDisplay" id="option1">
+                    <div className="dataDisplay" style={{ display: "none" }} id="option1">
                         <h2>Informacje personalne:</h2>
                         <p>WIEK: {jsonData.age}</p>
                         <p>PŁEĆ: {jsonData.sex}</p>
@@ -266,9 +324,11 @@ const Create = () => {
                         <h2>Bmi oraz kalorie:</h2>
                         <p>ZAPOTRZEBOWANIE KALORYCZNE: {jsonData.caloricDemand} kcal</p>
                         <p>BMI: {jsonData.bmi}</p>
-                        
-                    </div>
 
+                    </div>
+                    <div className="BmiErr" style={{ display: "none" }}>
+                        <h1> Dodałeś już swój profil użytkownika!</h1>
+                    </div>
                     <div className="BmiForm" id="option2" style={{ display: "none" }}>
                         <form onSubmit={handleSubmit}>
                             <label> Płeć:</label><br />
@@ -312,16 +372,12 @@ const Create = () => {
                             <button>Submit</button>
                         </form>
                     </div>
-                    <div className="option3" id="option3" style={{ display: "none" }}>
+                
+                    <div className="slider" id="option3" style={{ display: "none" }}>
+                        <br />
+                        <DiscreteSliderSteps />
+                        <br/>
                         
-                        
-                        {/* <form>
-                            {dietInputs.map((x) => (
-                                <FormInput key={x.id}{...x} value={values[x.name]} onChange={onChange} />
-                            ))}
-
-                            <button>Submit</button>
-                        </form> */}
                     </div>
                 </Paper>
             </div >

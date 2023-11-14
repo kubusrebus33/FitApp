@@ -37,6 +37,13 @@ public class MealController {
         mealService.seedMeals();
     }
 
+    @GetMapping("/deleteDiet")
+    public void seed1(@RequestHeader HttpHeaders headers) {
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        bearerToken = bearerToken.substring(7);
+        mealService.deleteDiet(bearerToken);
+    }
+
     @GetMapping("/getMeal/{id}")
     public ResponseEntity<MealDto> lol(@PathVariable int id) {
         Meal x = mealService.getMeal(id);
@@ -52,15 +59,26 @@ public class MealController {
         return ResponseEntity.ok(y);
     }
 
+
+
     @GetMapping("/getUserDiet")
-//    @RequestHeader HttpHeaders headers
-    public ResponseEntity<List<Meal>> getDiet() {
-//        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
-//        bearerToken = bearerToken.substring(7);
+    public ResponseEntity<List<MealDto>> getDiet(@RequestHeader HttpHeaders headers) {
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        bearerToken = bearerToken.substring(7);
 
-        List<Meal> newList = mealService.getDiet();
+        List<MealDto> listOfMeals = new ArrayList<>();
+        List<Meal> newList = mealService.getDiet(bearerToken);
 
-        return ResponseEntity.ok(newList);
+        for(Meal meal : newList){
+            List<String> ingredientAssoc = new ArrayList<>();
+                for (MealIngredient element : meal.getIngredientAssoc()) {
+                    ingredientAssoc.add(element.toString());
+                }
+            MealDto m = mealMapper.toMealDto(meal);
+            m.setIngredientAssoc(ingredientAssoc);
+            listOfMeals.add(m);
+        }
+        return ResponseEntity.ok(listOfMeals);
     }
 
 }
