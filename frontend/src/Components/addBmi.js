@@ -12,10 +12,6 @@ const Create = () => {
     const [error, setError] = useState('');
     const [jsonData, setJsonData] = useState({});
 
-    const [weeks, setWeeks] = useState(1);
-    const [days, setDays] = useState(1);
-
-    
     function valuetext(value) {
         return `${value}`;
     }
@@ -205,7 +201,8 @@ const Create = () => {
         )
             .then((response) => {
                 console.log("Success:", response.data);
-                window.location.href = '/addBmi';
+                window.alert("Pomyślnie dodano profil użytkownika!");
+                window.location.href = '/Home';
             })
             .catch((error) => {
                 window.alert("Już posiadasz profil użytkownika!");
@@ -250,30 +247,30 @@ const Create = () => {
         }
     ]
 
-    const dietInputs = [
-        {
-            id: 1,
-            name: "kilogramy",
-            type: "number",
-            placeholder: "kg",
-            errorMessage: "Zalecana liczba kilogramów: 1 - 15",
-            label: "Ile kilogramów chcesz zrzucić? ",
-            min: 1,
-            max: 15,
-            required: true
-        },
-        {
-            id: 2,
-            name: "tygodnie",
-            type: "number",
-            placeholder: "tyg",
-            errorMessage: "Zalecana liczba tygodni: 1 - 24",
-            label: "W ile tygodni? ",
-            min: 1,
-            max: 24,
-            required: true
-        }
-    ]
+    // const dietInputs = [
+    //     {
+    //         id: 1,
+    //         name: "kilogramy",
+    //         type: "number",
+    //         placeholder: "kg",
+    //         errorMessage: "Zalecana liczba kilogramów: 1 - 15",
+    //         label: "Ile kilogramów chcesz zrzucić? ",
+    //         min: 1,
+    //         max: 15,
+    //         required: true
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "tygodnie",
+    //         type: "number",
+    //         placeholder: "tyg",
+    //         errorMessage: "Zalecana liczba tygodni: 1 - 24",
+    //         label: "W ile tygodni? ",
+    //         min: 1,
+    //         max: 24,
+    //         required: true
+    //     }
+    // ]
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
@@ -287,19 +284,16 @@ const Create = () => {
 
                 <br /><br />
                 <Paper className="menu" elevation={3}>
-                    <h3 onClick={() => showDiv('option1')} className="clickable-text">Istniejący profil</h3>
+                    <h3 onClick={() => showDiv('option1')} className="clickable-text">Profil użytkownika</h3>
                     <h3 onClick={() => showDiv('option2')} className="clickable-text">Dodaj profil użytkownika</h3>
-                    <h3 onClick={() => showDiv('option3')} className="clickable-text">Edytuj zapotrzebowanie kaloryczne</h3>
+                    <h3 onClick={() => showDiv('option3')} className="clickable-text">Czas transformacji ciała</h3>
                 </Paper>
 
                 <Paper className="content" elevation={3}>
-                    <div className="welcome">
-                        <h1> Profil użytkownika </h1>
-                    </div>
                     <div className="errorDiv" style={{ display: "none" }}>
                         <h1> Najpierw dodaj swój profil użytkownika!</h1>
                     </div>
-                    <div className="dataDisplay" style={{ display: "none" }} id="option1">
+                    <div className="dataDisplay" style={{ display: "block" }} id="option1">
                         <h2>Informacje personalne:</h2>
                         <p>WIEK: {jsonData.age}</p>
                         <p>PŁEĆ: {jsonData.sex}</p>

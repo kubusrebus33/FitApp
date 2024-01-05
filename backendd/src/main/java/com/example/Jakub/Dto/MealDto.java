@@ -1,6 +1,5 @@
 package com.example.Jakub.Dto;
 
-import com.example.Jakub.Entity.MealIngredient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -5,6 +5,7 @@ import Login from './Components/Login';
 import Register from './Components/Register';
 import Home from './Components/Home';
 import Diet from './Components/Diet';
+import Welcome from './Components/welcome';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/addBmi" element={<Create />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/Diet" element={<Diet />} />
+          <Route path="/welcome" element={<Welcome />} />
         </Routes>
       </div>
     </Router>

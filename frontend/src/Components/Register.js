@@ -64,7 +64,7 @@ const Register = () => {
             .catch((error) => {
                 console.error("An error occurred:", error);
                 setAuthToken(null);
-                // Reroute or handle the error in a way that suits your application
+                setErrorMessage("Taki użytkownik już istnieje!");
             });
     };
 
@@ -82,7 +82,7 @@ const Register = () => {
                         <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
                     ))}
                     {errorMessage && (
-                        <p className="error"> {errorMessage} </p>
+                        <h1 className="error" style={{ color: 'red' }}> {errorMessage} </h1>
                     )}<br />
                     <button className="submitButton">Submit</button>
                 </form>

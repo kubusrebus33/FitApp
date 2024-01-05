@@ -1,5 +1,6 @@
 package com.example.Jakub.Service;
 
+import com.example.Jakub.Dto.MealDto;
 import com.example.Jakub.Dto.UserProfileDto;
 import com.example.Jakub.Entity.*;
 import com.example.Jakub.Exception.AppException;
@@ -36,7 +37,7 @@ public class MealService {
     @Autowired
     private UserService userService;
 
-    public void seedMeals(){
+    public void seedMeals() {
         mealRepository.save(new Meal("Makaron z pesto, pieczarkami i kurczakiem", 675.0f, 40.9f, 61.7f, 29.8f, "Makaron ugotuj al'dente (zostaw około 40 ml wody z gotowania). Mięso pokrój w kostkę, cebulę i czosnek posiekaj, pieczarki pokrój w plasterki. Cebulę i czosnek zeszklij na patelni. Następnie dodaj pieczarki i duś pod przykryciem aż puszczą wodę. Dodaj mięso i smaż aż będzie gotowe. Przypraw do smaku. Dodaj pesto i wodę. Na koniec dodaj śmietanę, makaron i wymieszaj. Danie posyp parmezanem i udekoruj rukolą.", 1, 1, 1, "dinner"));
         mealRepository.save(new Meal("Kurczak teriyaki z kaszą i brokułem", 823.0f, 64.1f, 85.5f, 27.3f, "Kaszę ugotuj. Brokuł podziel na mniejsze różyczki, marchewkę pokrój w drobną kostkę. Na patelni podsmaż warzywa, dodaj sos sojowy i trochę wody. Duś do miękkości. Dodaj kaszę i całość wymieszaj. Mięso pokrój w plastry, przypraw do smaku pieprzem i solą i podsmaż z obu stron. Wlej sos teriyaki, dodaj sezam i smaż jeszcze 1 minutę. Kaszę podawaj z mięsem.", 1, 1, 0, "dinner"));
         mealRepository.save(new Meal("Makaron wysokobiałkowy z kurczakiem", 922.0f, 64.9f, 86.0f, 35.4f, "Makaron ugotuj al'dente. Mięso pokrój w kostkę. Cebulę posiekaj i zeszklij na patelni. Dodaj koncentrat, przyprawy i wymieszaj. Dodaj mięso i smaż aż będzie gotowe. Wlej śmietankę, dodaj starty ser i wymieszaj. Na koniec dodaj makaron i połącz wszystkie składniki. Na talerzu posyp posiekaną natką.", 1, 1, 1, "dinner"));
@@ -94,7 +95,7 @@ public class MealService {
         mealRepository.save(new Meal("Omlet sernikowy z brzoskwinią", 621.0f, 47.6f, 56.4f, 23.4f, "Brzoskwinię pokrój w kostkę. Pozostałe składniki zblenduj na gładką masę. Dodaj brzoskwinię i wymieszaj łyżką. Na rozgrzaną patelnię wlej masę i smaż z obu stron pod przykryciem.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Burger śniadaniowy bez laktozy z jajkiem sadzonym", 377.0f, 15.1f, 43.9f, 16.8f, "Bułkę przekrój na pół i podgrzej na suchej patelni. Usmaż sadzone jajko. Z podanych składników przygotuj burgera. Bułkę złóż na pół.", 0, 1, 0, "breakfast"));
         mealRepository.save(new Meal("Burger śniadaniowy z jajkiem sadzonym", 406.0f, 16.0f, 48.3f, 18.0f, "Bułkę przekrój na pół i podgrzej na suchej patelni. Usmaż sadzone jajko. Z podanych składników przygotuj burgera. Bułkę złóż na pół.", 0, 1, 1, "breakfast"));
-        mealRepository.save(new Meal("Omlet szpinakowy z białek", 365.0f, 34.1f, 32.7f, 11.2f, "Białka ubij na sztywną pianę z dodatkiem soli. Szpinak zblenduj z mlekiem i wymieszaj z białkami. Dodaj mąkę, proszek, przyprawy i delikatnie wymieszaj. Na rozgrzaną patelnię wlej masę i smaż z obu stron pod przykryciem. Omleta podawaj z serkiem wiejskim, połówkami pomidorków i posyp posiekanym szczypiorkiem.", 0 , 1, 1,"breakfast"));
+        mealRepository.save(new Meal("Omlet szpinakowy z białek", 365.0f, 34.1f, 32.7f, 11.2f, "Białka ubij na sztywną pianę z dodatkiem soli. Szpinak zblenduj z mlekiem i wymieszaj z białkami. Dodaj mąkę, proszek, przyprawy i delikatnie wymieszaj. Na rozgrzaną patelnię wlej masę i smaż z obu stron pod przykryciem. Omleta podawaj z serkiem wiejskim, połówkami pomidorków i posyp posiekanym szczypiorkiem.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Placuszki czekoladowe na mące migdałowej bez laktozy", 534.0f, 20.5f, 9.3f, 45.1f, "Wszystkie składniki wymieszaj. Na rozgrzaną patelnię nakładaj łyżką placuszki i smaż z obu stron na małym ogniu.", 0, 1, 0, "breakfast"));
         mealRepository.save(new Meal("Koktajl owsiany z borówkami i gruszką", 268.0f, 1.5f, 34.9f, 13.3f, "Zblenduj wszystkie składniki", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Naleśniki jaglane z hummusem i wędliną", 609.0f, 28.8f, 65.5f, 26.0f, "Do miski wrzuć jajko, mąkę, napój roślinny i całość zblenduj na gładką masę. Odstaw na kilka minut do lodówki, następnie przemieszaj. Na rozgrzanej patelni usmaż naleśniki. Naleśniki posmaruj hummusem i dodaj resztę składników.", 1, 1, 1, "breakfast"));
@@ -108,7 +109,7 @@ public class MealService {
         mealRepository.save(new Meal("Ryż z borówkami i jogurtem kokosowym", 318.0f, 4.0f, 64.0f, 3.3f, "Ryż ugotuj wg wskazówek na opakowaniu. Owoce wymieszaj z jogurtem i miodem. Ugotowany ryż podawaj owocami.", 0, 1, 1, "breakfast"));
 
         mealRepository.save(new Meal("Musli bez laktozy", 471.0f, 14.5f, 59.9f, 21.6f, "Owoce obierz i pokrój na małe kawałki. Wymieszaj wszystkie składniki.", 0, 0, 0, "breakfast"));
-        mealRepository.save(new Meal("Jaglanka bez laktozy z owocami", 422.0f, 17.1f, 52.9f, 16.5f, "Kaszę opłucz na sitku i ugotuj na mleku. Gdy kasza wchłonie mleko, przełóż jaglankę do miski i dodaj pozostałe składniki.", 0,  0, 0, "breakfast"));
+        mealRepository.save(new Meal("Jaglanka bez laktozy z owocami", 422.0f, 17.1f, 52.9f, 16.5f, "Kaszę opłucz na sitku i ugotuj na mleku. Gdy kasza wchłonie mleko, przełóż jaglankę do miski i dodaj pozostałe składniki.", 0, 0, 0, "breakfast"));
         mealRepository.save(new Meal("Jaglanka z bananem bez laktozy", 446.0f, 15.6f, 62.5f, 16.2f, "Kaszę przepłucz na sitku i ugotuj na mleku. Następnie zmiksuj z bananem. Posyp posiekaną czekoladą i polej masłem.", 0, 0, 0, "breakfast"));
         mealRepository.save(new Meal("Ryżanka truskawkowa bez laktozy", 423.0f, 14.2f, 67.1f, 12.7f, "Ryż ugotuj na mleku. Owoce pokrój w kostkę. Orzechy posiekaj i udekoruj nimi ryżankę.", 0, 0, 0, "breakfast"));
         mealRepository.save(new Meal("Twarożek bez laktozy z pieczywem", 266.0f, 23.8f, 19.4f, 10.5f, "Z podanych składników przygotuj kanapki.", 0, 0, 0, "breakfast"));
@@ -137,7 +138,7 @@ public class MealService {
         mealRepository.save(new Meal("Spaghetti bezglutenowe z tofu", 402.0f, 12.4f, 56.6f, 15.0f, "Makaron ugotuj wg instrukcji na opakowaniu. Cebulę zeszklij. Dodaj tofu, a po chwili resztę składników. Duś, aż warzywa będą miękkie. Podawaj wymieszane z makaronem.", 0, 0, 0, "dinner"));
         mealRepository.save(new Meal("Kanapka bezglutenowa z miodem", 148.0f, 0.6f, 31.7f, 1.7f, "Przygotuj kanapkę.", 0, 0, 0, "breakfast"));
         mealRepository.save(new Meal("Naleśnik bezglutenowy z dżemem", 952.0f, 36.8f, 106.7f, 44.7f, "Składniki zmiksuj lub zblenduj (poza dżemem). Patelnie rozgrzej. Wlej część powstałej masy i smaż do zarumienienia z obu stron. Zjedz z dodatkami.", 0, 0, 0, "dinner"));
-       //
+        //
         mealRepository.save(new Meal("Jabłko w cieście bezglutenowym", 445.0f, 15.7f, 51.9f, 20.9f, "Jabłko obierz, wydrąż (tak, aby w środku jabłek był otwór), pokrój w cienkie plasterki. Mąki, mleko, cukier oraz jajko wymieszaj. Następnie dodaj szczyptę soli i cynamon. Zmiksuj na gładką masę. Plastry jabłka zanurz w cieście i usmaż na oleju.", 1, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Bezglutenowa tortilla z warzywami", 393.0f, 10.4f, 56.9f, 15.7f, "Warzywa pokrój. Tortillę posmaruj oliwą, dodaj sałatę, warzywa i ciecierzycę. Zgrilluj z obu stron.", 0, 0, 1, "breakfast"));
         mealRepository.save(new Meal("Placuszki szpinakowe bezglutenowe", 440.0f, 16.1f, 54.9f, 18.1f, "Szpinak zblenduj i połącz z resztą składników (oprócz oleju). Na rozgrzaną patelnię wlej olej i smaż placuszki.", 0, 0, 1, "breakfast"));
@@ -1324,43 +1325,71 @@ public class MealService {
 
     }
 
-    public Meal getMeal(int id){
+    public Meal getMeal(int id) {
         Meal x = mealRepository.findMealByMealId(id);
         return x;
     }
 
     public void saveDiet(String bearerToken, List<Meal> listOfMeals) {
+        System.out.println("FUNKCJA SAVE DIET");
+        System.out.println("wielkość nowej listy: " + listOfMeals.size());
         UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
-        if(mealKitRepository.existsBy_user(user)){
+        if (mealKitRepository.existsBy_user(user)) {
             throw new AppException("This username has got diet already!", HttpStatus.BAD_REQUEST);
-        }else {
-            for (Meal meal:listOfMeals) {
-                mealKitRepository.save(new mealKit(user, mealRepository.findMealByMealName(meal.getMealName())));
-            }
         }
+            for (Meal meal : listOfMeals) {
+                mealKitRepository.save(new mealKit(user, mealRepository.findMealByMealId(meal.getMealId())));
+                System.out.println("added: " + meal.getMealId());
+            }
     }
 
     public void deleteDiet(String bearerToken) {
         UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
-//        while (mealKitRepository.existsBy_user(user)) {
-//            mealKitRepository.deleteBy_user(user);
-//        }
+
+        if (!mealKitRepository.existsBy_user(user)) {
+            throw new AppException("This username has got no diet!", HttpStatus.BAD_REQUEST);
+        }
+
         mealKitRepository.deleteAllBy_user(user);
+        System.out.println("succesfuly DELETED");
     }
 
-    public List<Meal> getDiet(String bearerToken){
+    //badania operacyjne, prrogramowanie liniowe
+    //wykresy do diety
+
+    public List<Meal> postDiet(String bearerToken) {
         UserProfileDto userProfile = userService.getUserProfile(bearerToken);
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
 
         if (userProfile == null) {
             throw new AppException("This User has no profile!", HttpStatus.BAD_REQUEST);
         }
 
+        List<Meal> randomMeals = new ArrayList<>();
+
+        if (mealKitRepository.existsBy_user(user)) {
+            List<mealKit> meals = new ArrayList<>(mealKitRepository.findAllBy_user(user));
+            for (mealKit x : meals) {
+                randomMeals.add(x.get_meal());
+            }
+            return randomMeals;
+        }
+
         int userCalories = userProfile.getCaloricDemand();
         int dietInfo = userProfile.getDietInfo();
+        System.out.println("@");
+        randomMeals = searchForMeals(userCalories, dietInfo);
+        System.out.println("@");
+        saveDiet(bearerToken, randomMeals);
+        return randomMeals;
+    }
 
+    public List<Meal> searchForMeals(int userCalories, int dietInfo) {
         List<Meal> randomMeals = new ArrayList<>();
+        System.out.println("Search for meals USER CALORIES:" + userCalories);
         int sumOfCalories = 0, sumOfCarbs = 0, sumOfFats = 0, sumOfProteins = 0;
-        while(!(((userCalories + 100 > sumOfCalories) && (userCalories - 100 < sumOfCalories)) && ((sumOfCarbs * 4 < userCalories * 0.65) && (sumOfCarbs * 4 > userCalories * 0.50)) &&
+
+        while(!(((userCalories + 60 > sumOfCalories) && (userCalories - 60 < sumOfCalories)) && ((sumOfCarbs * 4 < userCalories * 0.65) && (sumOfCarbs * 4 > userCalories * 0.50)) &&
                 ((sumOfFats * 9 < userCalories * 0.30) && (sumOfFats * 9 > userCalories * 0.2)) &&
                 ((sumOfProteins * 4 < userCalories * 0.2) && (sumOfProteins * 4 > userCalories * 0.15)))) {
 
@@ -1373,8 +1402,7 @@ public class MealService {
             sumOfFats = 0;
             sumOfProteins = 0;
 
-            while(userCalories - 50 > sumOfCalories){
-
+            while(userCalories - 30 > sumOfCalories){
                 do {
                     int b = 0;
                     Meal meal = mealRepository.findRandom();
@@ -1419,20 +1447,136 @@ public class MealService {
 
                     break;
                 }while(1 == 1);
+            }
         }
-    }
-//
-//        System.out.println("Calories: "+ sumOfCalories);
-//
-//        double proteinPercentage = ((double) sumOfProteins * 4) / sumOfCalories;
-//        double carbPercentage = ((double) sumOfCarbs * 4) / sumOfCalories;
-//        double fatPercentage = ((double) sumOfFats * 9) / sumOfCalories;
-//
-//        System.out.println("Proteins: " + (proteinPercentage * 100) + "%");
-//        System.out.println("Carbs: " + (carbPercentage * 100) + "%");
-//        System.out.println("Fats: " + (fatPercentage * 100) + "%");
 
-        saveDiet(bearerToken, randomMeals);
+        double proteinPercentage = ((double) sumOfProteins * 4) / sumOfCalories;
+        double carbPercentage = ((double) sumOfCarbs * 4) / sumOfCalories;
+        double fatPercentage = ((double) sumOfFats * 9) / sumOfCalories;
+
+        System.out.println("Proteins: " + (proteinPercentage * 100) + "%");
+        System.out.println("Carbs: " + (carbPercentage * 100) + "%");
+        System.out.println("Fats: " + (fatPercentage * 100) + "%");
+
+        System.out.println("suma kalorii z funkcji: " + sumOfCalories);
         return randomMeals;
+    }
+    public List<Meal> getDiet(String bearerToken) {
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+
+        if (user == null) {
+            throw new AppException("No such user!", HttpStatus.BAD_REQUEST);
+        }
+
+        List<mealKit> x = mealKitRepository.findAllBy_user(user);
+        if (x == null) {
+            throw new AppException("User has no diet set!", HttpStatus.BAD_REQUEST);
+        }
+
+        List<Meal> listOfMeals = new ArrayList<>();
+        for(mealKit y : x){
+            listOfMeals.add(mealRepository.findMealByMealId(y.get_meal().getMealId()));
+        }
+
+        return listOfMeals;
+    }
+
+    public List<Meal> changeMeal(String bearerToken, int[] mealsId) {
+        UserProfileDto userProfile = userService.getUserProfile(bearerToken);
+        if (userProfile == null) {
+            throw new AppException("User has no profile set!", HttpStatus.BAD_REQUEST);
+        }
+
+        int dietInfo = userProfile.getDietInfo();
+
+        List<Meal> listOfMeals = getDiet(bearerToken);
+        for(int z : mealsId) {
+            int d = 0;
+            for (Meal y : listOfMeals) {
+                if(y.getMealId() == z){
+                    d++;
+                }
+            }
+            if (d != 1) throw new AppException("There is no such meal in user diet!", HttpStatus.BAD_REQUEST);
+        }
+
+        List<Meal> listOfDeletedMeals = new ArrayList<Meal>();
+        List<Meal> listOfOldMeals = new ArrayList<Meal>();
+
+        for(Meal y : listOfMeals){
+            int g = 0;
+            for(int z : mealsId) {
+                if (y.getMealId() == z) {
+                    listOfDeletedMeals.add(y);
+                    g++;
+                }
+            }
+            if(g == 0) listOfOldMeals.add(y);
+        }
+
+        int sumOfCalories = 0;
+
+        for(Meal y : listOfDeletedMeals){
+            sumOfCalories += y.getCalories();
+        }
+        List<Meal> newMeals = new ArrayList<Meal>();
+        int c, cc = 0;
+        do {
+            c = 0;
+            List<Meal> meals = new ArrayList<Meal>();
+            List<Integer> o = new ArrayList<>();
+            meals = searchForMeals(sumOfCalories, dietInfo);
+
+            for(Meal y : meals){
+                o.add(y.getMealId());
+                for(Meal z : listOfDeletedMeals) {
+                    if (y.getMealId() == z.getMealId()){
+                        c++;
+                    }
+                }
+                for(int x : mealsId) {
+                    if (y.getMealId() == x){
+                        c++;
+                    }
+                }
+            }
+            for(Meal y : meals) {
+                int ccc = 0;
+                for(Integer p : o){
+                    if(p == y.getMealId()) ccc++;
+                }
+                if(ccc > 1) c++;
+            }
+            cc++;
+            if (c == 0) {
+                for(Meal z : meals) {
+                    newMeals.add(z);
+                }
+            }
+            if (cc > 20) {
+                throw new AppException("Too many tries getting a diet!", HttpStatus.BAD_REQUEST);
+            }
+        }while(c != 0);
+
+        for(Meal z : listOfOldMeals) {
+            newMeals.add(z);
+        }
+        int calories = 0;
+        for(Meal z : newMeals) {
+            System.out.println("   " + z.getMealId());
+            calories += z.getCalories();
+        }
+        if((userProfile.getCaloricDemand() > calories + 70) || (userProfile.getCaloricDemand() < calories - 70)){
+            changeMeal(bearerToken, mealsId);
+        }
+        System.out.println("wielkość listyyyyyyyy: "+ newMeals.size());
+        System.out.println("deleting DIET");
+        deleteDiet(bearerToken);
+
+        System.out.println("SAVING DIET");
+        saveDiet(bearerToken, newMeals);
+
+        System.out.println("RETURNING MEAL");
+        return newMeals;
     }
 }
