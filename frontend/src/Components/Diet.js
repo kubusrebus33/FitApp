@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Button from '@mui/material/Button';
+import "./button.css"
 
 export default function Diet() {
   const [error, setError] = useState('');
@@ -59,6 +60,7 @@ export default function Diet() {
     )
       .then((response) => {
         setJsonData(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -66,7 +68,6 @@ export default function Diet() {
         window.location.href = '/addBmi';
       });
   };
-
 
   const deleteDiet = () => {
     request("GET",
@@ -121,14 +122,59 @@ export default function Diet() {
       </TableContainer>
     </div>
   );
+  const [c, setC] = useState(0);
+  const [checkedRows, setCheckedRows] = useState([]);
+
+  const handleCheckboxChange = (index) => {
+    
+    const isChecked = checkedRows.includes(index);
+
+    if (isChecked) {
+      setCheckedRows(checkedRows.filter((item) => item !== index));
+      setC((prevC) => prevC - 1);
+    } else {
+      setCheckedRows([...checkedRows, index]);
+      setC((prevC) => prevC + 1);
+    }
+    let numberOfCheckedRows = checkedRows.length;
+    console.log(numberOfCheckedRows);
+    if(numberOfCheckedRows > 1) buttonElement.style.display = 'block';
+    else buttonElement.style.display = 'none';
+  };
+
+  const selectedMeals = jsonData.filter((meal, index) => checkedRows.includes(index));
+
+  const editDiet = () => {
+    const mealNames = selectedMeals.map((meal) => meal.mealName);
+
+    const mealNamesData = {
+      mealNames
+    };
+
+    request(
+      "POST",
+      "http://localhost:8080/changeMeal",
+      JSON.stringify(mealNamesData)
+  )
+      .then((response) => {
+        console.log("Success:", response.data);
+        window.alert("Zmieniono posiłki!");
+        window.location.href='/Diet';
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        window.alert("PROBLEMO");
+      });
+  };
+
 
   const mealsList2 = () => (
     <div>
-      <p>Łącznie kalorii: {countCalories(jsonData)}</p>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow style={{ fontWeight: 'bold' }}>
+              <TableCell><b>X</b></TableCell>
               <TableCell><b>Nazwa posiłku</b></TableCell>
               <TableCell align="right"><b>Kilo kalorie</b></TableCell>
             </TableRow>
@@ -136,6 +182,13 @@ export default function Diet() {
           <TableBody>
             {jsonData.map((meal, index) => (
               <TableRow key={index}>
+                <TableCell>
+                  <input
+                    type="checkbox"
+                    checked={checkedRows.includes(index)}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
+                </TableCell>
                 <TableCell>{meal.mealName}</TableCell>
                 <TableCell align="right">{meal.calories}</TableCell>
               </TableRow>
@@ -143,8 +196,11 @@ export default function Diet() {
           </TableBody>
         </Table>
       </TableContainer>
+      <p style={{ float: 'right' }}>Łącznie kalorii: {countCalories(jsonData)}</p>
     </div>
   );
+
+  const buttonElement = document.getElementById('submitButton');
 
   return (
     <div>
@@ -164,8 +220,11 @@ export default function Diet() {
 
           </div>
           <div className="dataDisplay" style={{ display: "none" }} id="option2">
+            Zaznacz posiłki, które chcesz wymienić.
             {mealsList2()}
           </div>
+          <br></br> 
+          <button className="myButton" id="submitButton" style={{ display: "none" }} onClick={editDiet}>Submit</button>
         </Paper>
       </div >
     </div >

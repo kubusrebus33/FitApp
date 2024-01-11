@@ -1,6 +1,7 @@
 package com.example.Jakub.Service;
 
 import com.example.Jakub.Dto.MealDto;
+import com.example.Jakub.Dto.MealNameDto;
 import com.example.Jakub.Dto.UserProfileDto;
 import com.example.Jakub.Entity.*;
 import com.example.Jakub.Exception.AppException;
@@ -62,15 +63,6 @@ public class MealService {
         mealRepository.save(new Meal("Tortilla kukurydziana z mozzarellą, hummusem i warzywami", 412.0f, 20.7f, 54.9f, 13.2f, "Warzywa pokrój w kostkę. Tortillę posmaruj hummusem. Na tortillę nałóż wszystkie składniki, posyp startą mozzarellą i zwiń.", 0, 0, 1, "dinner"));
         mealRepository.save(new Meal("Bezglutenowy wege wrap", 497.0f, 24.1f, 61.0f, 19.7f, "Placki: Wymieszaj mąkę z ziołami, gorącą wodą, oliwą, szczypiorkiem i zagnieć ciasto. Rozwałkuj na placek i smaż na rumiano na suchej patelni. Warzywa pokrój, zioła posiekaj. Na usmażone placki układaj dodatki - warzywa i tofu. Polej sosem: jogurt + przyprawy + musztarda. Wrapa zawiń.", 0, 0, 0, "dinner"));
         mealRepository.save(new Meal("Kawowy shake proteinowy", 717.0f, 1.0f, 97.1f, 19.4f, "Kawę zaparz i ostudź. Wszystkie składniki zblenduj na koktajl.", 0, 0, 1, "breakfast"));
-//        STOP HERE
-//        SELECT
-//        i.ingredient_name
-//        FROM meal m
-//        JOIN meal_ingredient mi
-//        ON m.meal_id = mi.meal_id
-//        JOIN ingredient i
-//        ON i.ingredient_id = mi.ingredient_id
-//        WHERE meal_name = "Kawowy shake proteinowy";
         mealRepository.save(new Meal("Grzanki z burratą i pomidorkami", 473.0f, 14.7f, 47.6f, 26.7f, "Bułkę przekrój na pół i podgrzej na suchej patelni. Pomidorki pokrój na mniejsze kawałki i podsmaż na patelni. Przypraw do smaku. Na grzanki nałóż pomidorki, plasterki burraty i udekoruj bazylią.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Owsianka ze śliwkami, czekoladą i odżywką", 857.0f, 1.0f, 110.6f, 25.9f, "Płatki wsyp do garnka i zalej mlekiem. Gotuj do miękkości. W międzyczasie wrzuć połamaną czekoladę i mieszaj aż się rozpuści. Owsiankę przełóż do miski i odstaw na 5 minut, aby lekko ostygła. Dodaj odżywkę i wymieszaj. Owsiankę podawaj z dodatkami.", 0, 1, 1, "breakfast"));
         mealRepository.save(new Meal("Wysokokaloryczny shake owocowy z malinami", 871.0f, 46.8f, 120.6f, 25.1f, "Banany obierz. Wszystkie składniki zblenduj na gładki koktajl.", 0, 1, 1, "breakfast"));
@@ -1481,13 +1473,19 @@ public class MealService {
         return listOfMeals;
     }
 
-    public List<Meal> changeMeal(String bearerToken, int[] mealsId) {
+    public List<Meal> changeMeal(String bearerToken, List <String> mealNames) {
         UserProfileDto userProfile = userService.getUserProfile(bearerToken);
         if (userProfile == null) {
             throw new AppException("User has no profile set!", HttpStatus.BAD_REQUEST);
         }
 
         int dietInfo = userProfile.getDietInfo();
+
+        List<Integer> mealsId = new ArrayList<>();
+
+        for(String x : mealNames){
+           mealsId.add(mealRepository.findMealByMealName(x).getMealId());
+        }
 
         List<Meal> listOfMeals = getDiet(bearerToken);
         for(int z : mealsId) {
@@ -1567,7 +1565,7 @@ public class MealService {
             calories += z.getCalories();
         }
         if((userProfile.getCaloricDemand() > calories + 70) || (userProfile.getCaloricDemand() < calories - 70)){
-            changeMeal(bearerToken, mealsId);
+            changeMeal(bearerToken, mealNames);
         }
         System.out.println("wielkość listyyyyyyyy: "+ newMeals.size());
         System.out.println("deleting DIET");

@@ -2,6 +2,7 @@ package com.example.Jakub.Controller;
 
 import com.example.Jakub.Dto.MealDto;
 import com.example.Jakub.Dto.MealIdDto;
+import com.example.Jakub.Dto.MealNameDto;
 import com.example.Jakub.Entity.Meal;
 import com.example.Jakub.Entity.MealIngredient;
 import com.example.Jakub.Mapper.MealMapper;
@@ -56,14 +57,16 @@ public class MealController {
         return ResponseEntity.ok(y);
     }
 
-    @GetMapping("/changeMeal")
-    public ResponseEntity<List<MealDto>> changeMeals(@RequestHeader HttpHeaders headers, @RequestBody MealIdDto mealIdDto) {
+    @PostMapping("/changeMeal")
+    public ResponseEntity<List<MealDto>> changeMeals(@RequestHeader HttpHeaders headers, @RequestBody MealNameDto mealNames) {
         String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
         bearerToken = bearerToken.substring(7);
 
+        System.out.println(mealNames);
+
         List<MealDto> listOfMeals = new ArrayList<>();
 
-        List<Meal> newList = mealService.changeMeal(bearerToken, mealIdDto.getMealsId());
+        List<Meal> newList = mealService.changeMeal(bearerToken, mealNames.getMealNames());
 
         for(Meal meal : newList){
             List<String> ingredientAssoc = new ArrayList<>();
@@ -117,5 +120,31 @@ public class MealController {
         }
         return ResponseEntity.ok(listOfMeals);
     }
+
+//    @GetMapping("/editDiet")
+//    public ResponseEntity<List<MealDto>> editUserDiet(@RequestHeader HttpHeaders headers, @RequestBody mealNames mealNames) {
+//        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+//        bearerToken = bearerToken.substring(7);
+//
+//        int oldCals = 0, newCals = 0;
+//        System.out.println(" XXXXXXXXXXXXXXXXXX ");
+//        List <Integer> integerList = new ArrayList<>();
+//        integerList.add(4);
+//        integerList.add(5);
+//        integerList.add(6);
+//        for (int x : integerList) {
+//            oldCals += mealService.getMeal(x).getCalories();
+//        }
+//        int[] intArray = integerList.stream().mapToInt(Integer::intValue).toArray();
+//        List<Meal> newList = mealService.changeMeal(bearerToken, intArray);
+//        System.out.println("Entered calories: " + oldCals);
+//
+//        for (Meal m : newList) {
+//            newCals += m.getCalories();
+//        }
+//        System.out.println("Returned calories: " + newCals);
+//
+//        return ResponseEntity.ok(listOfMeals);
+//    }
 
 }

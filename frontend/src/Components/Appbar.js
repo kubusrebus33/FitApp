@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import { getAuthToken, getUsername, setAuthToken, setUsername } from '../axios_helper.js';
-import AccountMenu from './AccountMenu.js';
 
 export default function Appbar() {
   const handleLogout = (e) =>{
