@@ -4,6 +4,7 @@ import "./Register.css"
 import { request, setAuthToken, setUsername } from '../axios_helper.js';
 import Paper from '@mui/material/Paper';
 import './paperStyles.css';
+import Button from '@mui/material/Button';
 
 const Register = () => {
     const [values, setValues] = useState({
@@ -21,7 +22,7 @@ const Register = () => {
             type: "email",
             placeholder: "email",
             errorMessage: "Wpisz poprawny adres email!",
-            label: "Email ",
+            label: "Email",
             required: true
         },
         {
@@ -49,7 +50,14 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const userData = { username: values.email, password: values.password }
-
+        if (values.email.trim() === "") {
+            setErrorMessage("Email nie może być pusty!");
+            return;
+        }
+        if (values.password.length < 8) {
+            setErrorMessage("Hasło musi mieć minimum 8 znaków!");
+            return;
+        }
         request(
             "POST",
             "http://localhost:8080/register",
@@ -64,7 +72,7 @@ const Register = () => {
             .catch((error) => {
                 console.error("An error occurred:", error);
                 setAuthToken(null);
-                setErrorMessage("Taki użytkownik już istnieje!");
+                setErrorMessage("Ten adres email jest zajęty!");
             });
     };
 
@@ -74,17 +82,19 @@ const Register = () => {
     }
 
     return (
-        <div className="registerForm">
+        <div className="registerForm" id="registerForm" sx ={{ 
+            backgroundImage: 'url("1.png")',
+           backgroundRepeat: 'repeat'}}>
             <Paper className="register" elevation={3}>
                 <form onSubmit={handleSubmit}>
-                    <h1> Register </h1>
+                    <h1> Rejestracja </h1>
                     {inputs.map((input) => (
                         <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
                     ))}
                     {errorMessage && (
-                        <h1 className="error" style={{ color: 'red' }}> {errorMessage} </h1>
+                        <h3 className="error" style={{ color: 'red' }}> {errorMessage} </h3>
                     )}<br />
-                    <button className="submitButton">Submit</button>
+                    <Button className="submitButton" size="large" variant="contained" onClick={handleSubmit}>Rejestruj</Button>
                 </form>
             </Paper>
         </div>

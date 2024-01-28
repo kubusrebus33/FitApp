@@ -4,9 +4,9 @@ import "./Register.css"
 import { request, getAuthToken } from '../axios_helper.js';
 import Paper from '@mui/material/Paper';
 import "./paperStyles.css";
-// import { IntegrationInstructionsRounded, PausePresentationTwoTone } from "@mui/icons-material";
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
+import Button from '@mui/material/Button';
 
 const Create = () => {
     const [error, setError] = useState('');
@@ -23,14 +23,14 @@ const Create = () => {
             setSliderValue(newValue);
         };
 
-        const x = (0.005 * jsonData.weight * 1000 * 7.35)/7;
+        const x = (0.005 * jsonData.weight * 1000 * 7.35) / 7;
         const cals = sliderValue * 7700;
         const z = cals / x;
         const weeks = Math.floor(z / 7);
         const days = Math.floor(z % 7);
 
         return (
-            
+
             <Box sx={{ width: 300 }}>
                 <Slider
                     value={sliderValue}
@@ -41,7 +41,7 @@ const Create = () => {
                     max={20}
                 />
                 <p>Chcę schudnąć: {valuetext(sliderValue)} kg</p>
-               
+
                 <p>Zajmie to około {weeks} tygodni, {days} dni</p>
             </Box>
         );
@@ -60,12 +60,12 @@ const Create = () => {
         if (Object.keys(jsonData).length === 0) {
             document.querySelector(".dataDisplay").style.display = "none";
             document.querySelector(".slider").style.display = "none";
-            if(divId === "option1" || divId === "option3"){
+            if (divId === "option1" || divId === "option3") {
                 document.querySelector(".errorDiv").style.display = "block";
             }
         } else {
-            if(divId === "option3")document.querySelector(".slider").style.display = "block";
-            
+            if (divId === "option3") document.querySelector(".slider").style.display = "block";
+
             document.querySelector(".BmiErr").style.display = "block";
             document.querySelector(".BmiForm").style.display = "none";
             document.querySelector(".errorDiv").style.display = "none";
@@ -83,7 +83,7 @@ const Create = () => {
             if (AuthToken === null || AuthToken === "null" || AuthToken === "undefined") {
                 document.querySelector(".BigBox").style.display = "none"; // Hide the selected element
 
-                setError("You are not logged in! Returning to the login page.");
+                setError("Nie jesteś zalogowany! Powrót do strony logowania...");
                 const delay = ms => new Promise(res => setTimeout(res, ms));
                 await delay(3000);
                 window.location.href = '/login';
@@ -202,7 +202,7 @@ const Create = () => {
             .then((response) => {
                 console.log("Success:", response.data);
                 window.alert("Pomyślnie dodano profil użytkownika!");
-                window.location.href = '/Home';
+                window.location.href = '/addBmi';
             })
             .catch((error) => {
                 window.alert("Już posiadasz profil użytkownika!");
@@ -295,8 +295,8 @@ const Create = () => {
                     </div>
                     <div className="dataDisplay" style={{ display: "block" }} id="option1">
                         <h2>Informacje personalne:</h2>
-                        <p>WIEK: {jsonData.age}</p>
-                        <p>PŁEĆ: {jsonData.sex}</p>
+                        <p>WIEK: {jsonData.age} </p>
+                        <p>PŁEĆ: {jsonData.sex == 'm' ? "Mężczyzna" : "Kobieta"}</p>
 
                         <h2>Pomiary i cel:</h2>
                         <p>CEL: {
@@ -340,6 +340,8 @@ const Create = () => {
                             <label>przytyć</label><br /><br />
 
                             <label>Preferencje żywieniowe:</label><br />
+                            <input type="radio" value="111" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)} defaultChecked></input>&nbsp;&nbsp;
+                            <label>Brak</label><br />
                             <input type="radio" value="11" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
                             <label>Bez mięsa</label><br />
                             <input type="radio" value="101" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
@@ -363,15 +365,15 @@ const Create = () => {
                                 <FormInput key={input.id}{...input} value={values[input.name]} onChange={onChange} />
                             ))}
 
-                            <button>Submit</button>
+                            <Button className="submitButton" size="large" variant="contained" onClick={handleSubmit}>Wyślij</Button>
                         </form>
                     </div>
-                
+
                     <div className="slider" id="option3" style={{ display: "none" }}>
                         <br />
                         <DiscreteSliderSteps />
-                        <br/>
-                        
+                        <br />
+
                     </div>
                 </Paper>
             </div >

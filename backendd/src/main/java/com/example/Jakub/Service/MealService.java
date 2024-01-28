@@ -1326,13 +1326,20 @@ public class MealService {
         System.out.println("FUNKCJA SAVE DIET");
         System.out.println("wielkość nowej listy: " + listOfMeals.size());
         UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
-        if (mealKitRepository.existsBy_user(user)) {
-            throw new AppException("This username has got diet already!", HttpStatus.BAD_REQUEST);
-        }
+
             for (Meal meal : listOfMeals) {
-                mealKitRepository.save(new mealKit(user, mealRepository.findMealByMealId(meal.getMealId())));
+                mealKitRepository.save(new mealKit(user, mealRepository.findMealByMealId(meal.getMealId()), 0));
                 System.out.println("added: " + meal.getMealId());
             }
+    }
+
+    public void saveSevenDiet(String bearerToken, List<Meal> listOfMeals, int c) {
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+
+        for (Meal meal : listOfMeals) {
+            mealKitRepository.save(new mealKit(user, mealRepository.findMealByMealId(meal.getMealId()), c));
+            System.out.println("added: " + meal.getMealId());
+        }
     }
 
     public void deleteDiet(String bearerToken) {
@@ -1342,14 +1349,23 @@ public class MealService {
             throw new AppException("This username has got no diet!", HttpStatus.BAD_REQUEST);
         }
 
-        mealKitRepository.deleteAllBy_user(user);
+        mealKitRepository.deleteAllBy_userAndMealGroup(user, 0);
         System.out.println("succesfuly DELETED");
+    }
+
+    public void deleteSevenDiet(String bearerToken) {
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+
+        for(int i = 1; i <= 7; i++){
+            mealKitRepository.deleteAllBy_userAndMealGroup(user, i);
+        }
+        System.out.println("succesfuly DELETED all 7dayMeals");
     }
 
     //badania operacyjne, prrogramowanie liniowe
     //wykresy do diety
 
-    public List<Meal> postDiet(String bearerToken) {
+    public List<Meal> postOneDayDiet(String bearerToken) {
         UserProfileDto userProfile = userService.getUserProfile(bearerToken);
         UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
 
@@ -1362,9 +1378,11 @@ public class MealService {
         if (mealKitRepository.existsBy_user(user)) {
             List<mealKit> meals = new ArrayList<>(mealKitRepository.findAllBy_user(user));
             for (mealKit x : meals) {
-                randomMeals.add(x.get_meal());
+                if(x.getMealGroup() == 0) randomMeals.add(x.get_meal());
             }
-            return randomMeals;
+            if (!randomMeals.isEmpty()) {
+                return randomMeals;
+            }
         }
 
         int userCalories = userProfile.getCaloricDemand();
@@ -1376,6 +1394,46 @@ public class MealService {
         return randomMeals;
     }
 
+    public List<Meal> postSevenDayDiet(String bearerToken) {
+        UserProfileDto userProfile = userService.getUserProfile(bearerToken);
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+
+        if (userProfile == null) {
+            throw new AppException("This User has no profile!", HttpStatus.BAD_REQUEST);
+        }
+
+        List<Meal> randomMeals = new ArrayList<>();
+
+        if (mealKitRepository.existsBy_user(user)) {
+            List<mealKit> meals = new ArrayList<>(mealKitRepository.findAllBy_user(user));
+            for (mealKit x : meals) {
+                if(x.getMealGroup() != 0) randomMeals.add(x.get_meal());
+            }
+            if (!randomMeals.isEmpty()) {
+                return randomMeals;
+            }
+        }
+
+        int userCalories = userProfile.getCaloricDemand();
+        int dietInfo = userProfile.getDietInfo();
+
+        for(int i = 1; i <= 7; i++){
+            randomMeals = searchForMeals(userCalories, dietInfo);
+            saveSevenDiet(bearerToken, randomMeals, i);
+//            for (Meal x : randomMeals) {
+//
+//            }
+        }
+
+        return randomMeals;
+    }
+    public List<mealKit> getMealKits(String bearerToken) {
+        UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
+
+        List<mealKit> mealKits = new ArrayList<>(mealKitRepository.findAllBy_user(user));
+
+        return mealKits;
+    }
     public List<Meal> searchForMeals(int userCalories, int dietInfo) {
         List<Meal> randomMeals = new ArrayList<>();
         System.out.println("Search for meals USER CALORIES:" + userCalories);
@@ -1453,6 +1511,7 @@ public class MealService {
         System.out.println("suma kalorii z funkcji: " + sumOfCalories);
         return randomMeals;
     }
+
     public List<Meal> getDiet(String bearerToken) {
         UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
 
@@ -1460,14 +1519,14 @@ public class MealService {
             throw new AppException("No such user!", HttpStatus.BAD_REQUEST);
         }
 
-        List<mealKit> x = mealKitRepository.findAllBy_user(user);
+        List<mealKit> x = mealKitRepository.findAllBy_userAndMealGroup(user, 0);
         if (x == null) {
             throw new AppException("User has no diet set!", HttpStatus.BAD_REQUEST);
         }
 
         List<Meal> listOfMeals = new ArrayList<>();
         for(mealKit y : x){
-            listOfMeals.add(mealRepository.findMealByMealId(y.get_meal().getMealId()));
+            if(y.getMealGroup() == 0) listOfMeals.add(mealRepository.findMealByMealId(y.get_meal().getMealId()));
         }
 
         return listOfMeals;

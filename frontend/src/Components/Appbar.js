@@ -31,18 +31,14 @@ export default function Appbar() {
     }
 }
 
-  const buttonStyle = { color: "white", border: "1px solid white", padding: "5px" }
+  const buttonStyle = { color: "white", border: "1px solid white", padding: "5px", margin:"10px" }
   const tabStyle = { color: "white", padding: "5px", fontSize: "15px", borderRadius: "0", paddingLeft: '20px', paddingRight: '20px' };
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-            <nav>
-              <Link to="/Home"><MenuIcon /></Link>
-            </nav>
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1}}>
             EatFitNow
           </Typography>
           {getAuthToken() !== null && getAuthToken() !== "null" && getAuthToken() !== "undefined" ? (
@@ -52,21 +48,21 @@ export default function Appbar() {
               <Link to="/addBmi"><Button color="inherit" style={{ ...tabStyle, borderRight: '2px solid white' }}>Kalkulator kalorii</Button></Link>
               <Link to="/Diet"><Button color="inherit" style={tabStyle}>Moja dieta</Button></Link>
             </nav>
-            <h2>{`Witaj ${extractUsername(getUsername())}`}</h2>
+            <h2 style={{paddingRight:"20px", paddingLeft:"96px"}}>{`Witaj ${extractUsername(getUsername())}`}</h2>
             <Button color="inherit" onClick={handleLogout}> 
-              Logout
+              Wyloguj
             </Button>
           </>
           ) : (
             <nav>
               <Link to="/Login">
                 <Button color="inherit" style={buttonStyle}>
-                  Login
+                  Logowanie
                 </Button>
               </Link>
               <Link to="/Register">
                 <Button color="inherit" style={buttonStyle}>
-                  Register
+                  Rejestracja
                 </Button>
               </Link>
             </nav>

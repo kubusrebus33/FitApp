@@ -21,4 +21,6 @@ public class mealKit {
     @ManyToOne
     @JoinColumn(name = "meal_id", referencedColumnName = "meal_id")
     private Meal _meal;
+
+    private int mealGroup;
 }

@@ -1,23 +1,21 @@
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
+import { Paper, Button } from '@mui/material';
 import "./paperStyles.css";
 import { useState, useEffect } from "react";
 import { request, getAuthToken } from '../axios_helper.js';
 import './pieChart.js';
 import { Pie } from 'react-chartjs-2';
-import TableContainer from '@mui/material/TableContainer';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Unstable_Popup as BasePopup } from '@mui/base/Unstable_Popup';
 
 export default function Home() {
 
   const [error, setError] = useState('');
   const [showDiv, setShowDiv] = useState(true);
   const [jsonData, setJsonData] = useState([]);
+  const [jsonSevenData, setJsonSevenData] = useState([]);
   const [numArr, setNumArr] = useState([1, 2, 3]);
+  const [x, setX] = useState(1);
 
   const [data, setData] = useState({
     labels: ['Białko', 'Węglowodany', 'Tłuszcze'],
@@ -39,6 +37,22 @@ export default function Home() {
       },
     ],
   });
+
+  const getMealKitInfo = () => {
+    request("GET",
+      "http://localhost:8080/GetMealKitInfo",
+      null
+    )
+      .then((response) => {
+        const updatedMealKitData = response.data.filter(item => item.mealGroup !== 0);
+        setJsonSevenData(updatedMealKitData);
+      })
+      .catch((error) => {
+        console.log(error);
+        window.alert("@@@@@@@@@@@@@@@@@@@@!");
+        window.location.href = '/addBmi';
+      });
+  };
 
   useEffect(() => {
     let y = countMakros(jsonData);
@@ -62,14 +76,13 @@ export default function Home() {
         },
       ],
     });
-    console.log(countMakros(jsonData));
   }, [jsonData]);
 
   useEffect(() => async () => {
     const AuthToken = getAuthToken();
 
     if (AuthToken === null || AuthToken === "null" || AuthToken === "undefined") {
-      setError("You are not logged in! Returning to login page.");
+      setError("Nie jesteś zalogowany! Powrót do strony logowania...");
       setShowDiv(false);
       const delay = ms => new Promise(res => setTimeout(res, ms));
       await delay(3000);
@@ -77,6 +90,7 @@ export default function Home() {
       window.location.href = '/login';
     } else {
       getDiet();
+      getMealKitInfo();
     }
   }, []);
 
@@ -100,6 +114,43 @@ export default function Home() {
     return [p, c, f];
   };
 
+  const mealsSevenList = () => (
+    <div>
+      <br /><br />
+      <TableContainer component={Paper}>
+        {Array.from({ length: 7 }, (_, i) => (
+          <div key={i} style={{ margin: '10px' }}>
+            <h3>Dzień {i + 1} </h3>
+            <Table sx={{ maxWidth: '100%' }} size="small">
+              <TableHead>
+                <TableRow style={{ fontWeight: 'bold'}}>
+                  <TableCell><b>Nazwa posiłku</b></TableCell>
+                  <TableCell><b>Kilo kalorie</b></TableCell>
+                  <TableCell><b>Białka (g)</b></TableCell>
+                  <TableCell><b>Węglowodany (g)</b></TableCell>
+                  <TableCell><b>Tłuszcze (g)</b></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {jsonSevenData
+                  .filter((mealKit) => mealKit.mealGroup === i + 1)
+                  .map((mealKit, ii) => (
+                    <TableRow key={`${i + 1}-${ii}`}>
+                      <TableCell>{mealKit.mealName}</TableCell>
+                      <TableCell>{mealKit.calories}</TableCell>
+                      <TableCell>{mealKit.proteins}</TableCell>
+                      <TableCell>{mealKit.carbohydrates}</TableCell>
+                      <TableCell>{mealKit.fats}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
+        ))}
+      </TableContainer>
+    </div>
+  );
+
   const countCalories = (list) => {
     let l = 0;
     for (const o of list) {
@@ -110,6 +161,7 @@ export default function Home() {
 
   const mealsList = () => (
     <div>
+      <h1>{countCalories(jsonData) == 0 ? "Obecnie nie posiadasz diety do wyświetlenia." : "Twoja obecna dieta:"}</h1>
       <p>Łącznie kalorii: {countCalories(jsonData)}</p>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -157,22 +209,40 @@ export default function Home() {
       });
   };
 
+  const toggleComponent = () => {
+    if (d1.style.display === "none") {
+      d1.style.display = "block";
+      d2.style.display = "none";
+      setX(0);
+    }
+    else {
+      d1.style.display = "none";
+      d2.style.display = "block";
+      setX(1);
+    }
+  };
+
+  const d1 = document.getElementById("d1");
+  const d2 = document.getElementById("d2");
 
   return (
     <div>
       <h1>{error}</h1>
       <div className="BigBox">
-
         <br /><br />
         <Paper className="menu" elevation={3}>
-        <Pie data={data} />
+          <Pie data={data} />
         </Paper>
 
         <Paper className="content" elevation={3}>
-          {mealsList()}
-          <div style={{ width: '500px', height: '500px' }}>
-
-            
+          <Button variant="outlined" style={{ float: "right" }} size="small" onClick={toggleComponent}>
+            Dieta {x == 1 ? 1 : 7 } dniowa
+          </Button>
+          <div id="d1">
+            {mealsList()}
+          </div>
+          <div id="d2" style={{ display: "none" }}>
+            {mealsSevenList()}
           </div>
         </Paper>
       </div >

@@ -12,11 +12,13 @@ public interface mealKitRepository extends JpaRepository<mealKit, Integer> {
 
     boolean existsBy_user(UserInfo user);
 
+    List<mealKit> findAllBy_userAndMealGroup(UserInfo user, int mealGroup);
+
     List<mealKit> findAllBy_user(UserInfo user);
 
     @Transactional
     void deleteBy_user(UserInfo user);
 
     @Transactional
-    void deleteAllBy_user(UserInfo user);
+    void deleteAllBy_userAndMealGroup(UserInfo user, int mealGroup);
 }

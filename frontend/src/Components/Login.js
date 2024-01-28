@@ -5,6 +5,7 @@ import { request, setAuthToken, setUsername } from '../axios_helper.js';
 import { Link } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import './paperStyles.css';
+import Button from '@mui/material/Button';
 
 export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -75,7 +76,7 @@ export default function Login() {
             </nav>
           </h4>
 
-          <button>Submit</button>
+          <Button className="submitButton" size="large" variant="contained" onClick={handleSubmit}>Zaloguj</Button>
         </form>
       </Paper>
     </div>
