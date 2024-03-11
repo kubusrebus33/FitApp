@@ -12,7 +12,7 @@ const Create = () => {
     const [error, setError] = useState('');
     const [jsonData, setJsonData] = useState({});
 
-    function valuetext(value) {
+    function valueText(value) {
         return `${value}`;
     }
 
@@ -40,7 +40,7 @@ const Create = () => {
                     min={1}
                     max={20}
                 />
-                <p>Chcę schudnąć: {valuetext(sliderValue)} kg</p>
+                <p>Chcę schudnąć: {valueText(sliderValue)} kg</p>
 
                 <p>Zajmie to około {weeks} tygodni, {days} dni</p>
             </Box>
@@ -115,7 +115,6 @@ const Create = () => {
         height: "",
     });
 
-    //let values = [[1.4, 1.5, 1.6, 1.7, 1.9], [1.5, 1.6, 1.7, 1.8, 2.0], [1.6, 1.7, 1.8, 1.9, 2.2], [1.7, 1.8, 1.9, 2.1, 2.3]];
     function CountActivityFactor(x) {
         let y;
         switch (x) {
@@ -205,8 +204,7 @@ const Create = () => {
                 window.location.href = '/addBmi';
             })
             .catch((error) => {
-                window.alert("Już posiadasz profil użytkownika!");
-                setError("You already have your userprofile!");
+                window.alert("Wypełnij formularz poprawnymi danymi!");
                 window.location.href = '/addBmi';
             });
     }
@@ -247,31 +245,6 @@ const Create = () => {
         }
     ]
 
-    // const dietInputs = [
-    //     {
-    //         id: 1,
-    //         name: "kilogramy",
-    //         type: "number",
-    //         placeholder: "kg",
-    //         errorMessage: "Zalecana liczba kilogramów: 1 - 15",
-    //         label: "Ile kilogramów chcesz zrzucić? ",
-    //         min: 1,
-    //         max: 15,
-    //         required: true
-    //     },
-    //     {
-    //         id: 2,
-    //         name: "tygodnie",
-    //         type: "number",
-    //         placeholder: "tyg",
-    //         errorMessage: "Zalecana liczba tygodni: 1 - 24",
-    //         label: "W ile tygodni? ",
-    //         min: 1,
-    //         max: 24,
-    //         required: true
-    //     }
-    // ]
-
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
     }
@@ -279,9 +252,7 @@ const Create = () => {
     return (
         <div>
             <h1>{error}</h1>
-
             <div className="BigBox">
-
                 <br /><br />
                 <Paper className="menu" elevation={3}>
                     <h3 onClick={() => showDiv('option1')} className="clickable-text">Profil użytkownika</h3>
@@ -327,37 +298,37 @@ const Create = () => {
                         <form onSubmit={handleSubmit}>
                             <label> Płeć:</label><br />
                             <input type="radio" value="k" name="sex" required onChange={(e) => setSex(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>kobieta</label><br />
+                            <label>kobieta</label>&nbsp;&nbsp;
                             <input type="radio" value="m" name="sex" onChange={(e) => setSex(e.target.value)}></input>&nbsp;&nbsp;
                             <label>mężczyzna</label><br /><br />
 
                             <label> Chcę:</label><br />
                             <input type="radio" value="1" name="goal" required onChange={(e) => setGoal(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>schudnąć</label><br />
+                            <label>schudnąć</label>&nbsp;&nbsp;
                             <input type="radio" value="2" name="goal" onChange={(e) => setGoal(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>utrzymać wagę</label><br />
+                            <label>utrzymać wagę</label>&nbsp;&nbsp;
                             <input type="radio" value="3" name="goal" onChange={(e) => setGoal(e.target.value)}></input>&nbsp;&nbsp;
                             <label>przytyć</label><br /><br />
 
                             <label>Preferencje żywieniowe:</label><br />
                             <input type="radio" value="111" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)} defaultChecked></input>&nbsp;&nbsp;
-                            <label>Brak</label><br />
+                            <label>Brak</label>&nbsp;&nbsp;
                             <input type="radio" value="11" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Bez mięsa</label><br />
+                            <label>Bez mięsa</label>&nbsp;&nbsp;
                             <input type="radio" value="101" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Bez glutenu</label><br />
+                            <label>Bez glutenu</label>&nbsp;&nbsp;
                             <input type="radio" value="110" name="dietInfo" onChange={(e) => setDietInfo(e.target.value)}></input>&nbsp;&nbsp;
                             <label>Bez Laktozy</label><br /><br />
 
                             <label> Ilość aktywności fizycznej:</label><br />
                             <input type="radio" value="1" name="activityLevel" required onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Siedzący tryb życia (niewielka lub brak aktywności fizycznej, praca przy biurku)</label><br />
+                            <label>Siedzący tryb życia (niewielka lub brak aktywności fizycznej, praca przy biurku)</label>
                             <input type="radio" value="2" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Lekka aktywność (ćwiczenia 1-3 razy w tygodniu)</label><br />
+                            <label>Lekka aktywność (ćwiczenia 1-3 razy w tygodniu)</label>
                             <input type="radio" value="3" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Średnia aktywność  (ćwiczenia 3-5 razy w tygodniu)</label><br />
+                            <label>Średnia aktywność  (ćwiczenia 3-5 razy w tygodniu)</label>
                             <input type="radio" value="4" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Bardzo aktywny (ćwiczenia 6-7 razy w tygodniu)</label><br />
+                            <label>Bardzo aktywny (ćwiczenia 6-7 razy w tygodniu)</label>
                             <input type="radio" value="5" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
                             <label>Bardzo intensywna aktywność (ćwiczenia 2 razy dziennie)</label><br /><br />
 

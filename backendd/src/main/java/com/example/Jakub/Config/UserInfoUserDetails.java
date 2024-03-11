@@ -2,13 +2,9 @@ package com.example.Jakub.Config;
 
 import com.example.Jakub.Entity.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserInfoUserDetails implements UserDetails {
 

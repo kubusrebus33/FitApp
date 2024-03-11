@@ -1,7 +1,6 @@
 package com.example.Jakub.Controller;
 
 import com.example.Jakub.Dto.MealDto;
-import com.example.Jakub.Dto.MealIdDto;
 import com.example.Jakub.Dto.MealKitDto;
 import com.example.Jakub.Dto.MealNameDto;
 import com.example.Jakub.Entity.Meal;

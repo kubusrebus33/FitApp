@@ -16,6 +16,7 @@ export default function Diet() {
   const [jsonMealKitData, setJsonMealKitData] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
   const [list, setList] = useState([]);
+  const [listOFMeals, setListOFMeals] = useState([]);
 
   useEffect(() => async () => {
     const AuthToken = getAuthToken();
@@ -93,7 +94,6 @@ export default function Diet() {
         setList(aggregatedIngredients);
 
         setJsonData(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -101,9 +101,6 @@ export default function Diet() {
         window.location.href = '/addBmi';
       });
   };
-  useEffect(() => {
-    console.log("shoppingList: ", shoppingList);
-  }, [shoppingList]);
 
   const getMealKitInfo = () => {
     request("GET",
@@ -112,8 +109,11 @@ export default function Diet() {
     )
       .then((response) => {
         const updatedMealKitData = response.data.filter(item => item.mealGroup !== 0);
+        const sortedList = updatedMealKitData.sort((a, b) => a.mealGroup - b.mealGroup);
+        setListOFMeals(sortedList);
+        console.log(sortedList);
+
         const ingredientInfo = response.data.flatMap((item) => item.ingredientAssoc.flatMap(ingredient => ingredient.split('g ')));
-        // setShoppingList(ingredientInfo);
         const sortedIngredientInfo = ingredientInfo.sort((a, b) => a.localeCompare(b));
 
         const ingredientFrequencyMap = new Map();
@@ -144,7 +144,6 @@ export default function Diet() {
 
         setShoppingList(aggregatedIngredients);
         setJsonMealKitData(updatedMealKitData);
-        console.log(shoppingList);
       })
       .catch((error) => {
         console.log(error);
@@ -189,8 +188,11 @@ export default function Diet() {
       null
     )
       .then((response) => {
+        const sortedList = response.data.sort((a, b) => a.mealGroup - b.mealGroup); //
+
+        console.log(sortedList);
+        setListOFMeals(sortedList);
         setJsonData(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -379,44 +381,9 @@ export default function Diet() {
 
   const mealsSevenList2 = () => (
     <div>
-      {/* <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow style={{ fontWeight: 'bold' }}>
-              <TableCell><b>X</b></TableCell>
-              <TableCell><b>Nazwa posiłku</b></TableCell>
-              <TableCell align="right"><b>Kilo kalorie</b></TableCell>
-              <TableCell align="right"><b>Białka (g)</b></TableCell>
-              <TableCell align="right"><b>Węglowodany (g)</b></TableCell>
-              <TableCell align="right"><b>Tłuszcze (g)</b></TableCell>
-              <TableCell><b>Przepis</b></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {jsonData.map((meal, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <input
-                    type="checkbox"
-                    checked={checkedRows.includes(index)}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                </TableCell>
-                <TableCell>{meal.mealName}</TableCell>
-                <TableCell align="right">{meal.calories}</TableCell>
-                <TableCell align="right">{meal.proteins}</TableCell>
-                <TableCell align="right">{meal.carbohydrates}</TableCell>
-                <TableCell align="right">{meal.fats}</TableCell>
-                <TableCell>{meal.recipe}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
-
       <TableContainer component={Paper}>
         {Array.from({ length: 7 }, (_, i) => (
-          <div key={i} style={{display: 'inline-block', margin: '10px' }}>
+          <div key={i} style={{ display: 'inline-block', margin: '10px' }}>
             <h3>Dzień {i + 1} </h3>
             <Table sx={{ maxWidth: '100%' }} size="small" aria-label="a dense table">
               <TableHead>
@@ -474,7 +441,6 @@ export default function Diet() {
     }
     if (b > 1) buttonElement.style.display = 'block';
     else buttonElement.style.display = 'none';
-    console.log(b);
   };
 
   const selectedMeals = jsonData.filter((meal, index) => checkedRows.includes(index));
@@ -564,7 +530,7 @@ export default function Diet() {
           <div className="dataDisplay" style={{ display: "none" }} id="option3">
             <Button variant="outlined" onClick={deleteSevenDiet} size="large">Generuj nową dietę</Button>
             <Button variant="outlined" onClick={downloadList} size="large">Lista zakupów</Button>
-            <Button variant="outlined" style={{ float: "right" }} onClick={() => { showDiv('option4'); }} size="large">Edytuj dietę</Button>
+            {/* <Button variant="outlined" style={{ float: "right" }} onClick={() => { showDiv('option4'); }} size="large">Edytuj dietę</Button> */}
 
             {mealsSevenList()}
 
@@ -574,7 +540,7 @@ export default function Diet() {
             {mealsSevenList2()}
           </div>
           <br></br>
-          <button className="myButton" id="submitButton" style={{ display: "none" }} onClick={editDiet}>Submit</button>
+          <Button className="submitButton" style={{ display: "none" }} id="submitButton" size="large" variant="contained" onClick={editDiet}>Zamień</Button>
         </Paper>
       </div >
     </div >

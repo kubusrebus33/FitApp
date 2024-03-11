@@ -14,8 +14,9 @@ export default function Home() {
   const [showDiv, setShowDiv] = useState(true);
   const [jsonData, setJsonData] = useState([]);
   const [jsonSevenData, setJsonSevenData] = useState([]);
-  const [numArr, setNumArr] = useState([1, 2, 3]);
   const [x, setX] = useState(1);
+  
+  const [numArr, setNumArr] = useState([1, 2, 3]);
 
   const [data, setData] = useState({
     labels: ['Białko', 'Węglowodany', 'Tłuszcze'],
@@ -116,6 +117,7 @@ export default function Home() {
 
   const mealsSevenList = () => (
     <div>
+      <h1>{countCalories(jsonSevenData) == 0 ? "Obecnie nie posiadasz diety do wyświetlenia." : "Twoja obecna dieta 7 dniowa:"}</h1>
       <br /><br />
       <TableContainer component={Paper}>
         {Array.from({ length: 7 }, (_, i) => (
@@ -161,7 +163,7 @@ export default function Home() {
 
   const mealsList = () => (
     <div>
-      <h1>{countCalories(jsonData) == 0 ? "Obecnie nie posiadasz diety do wyświetlenia." : "Twoja obecna dieta:"}</h1>
+      <h1>{countCalories(jsonData) == 0 ? "Obecnie nie posiadasz diety do wyświetlenia." : "Twoja obecna dieta 1 dniowa:"}</h1>
       <p>Łącznie kalorii: {countCalories(jsonData)}</p>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -210,16 +212,16 @@ export default function Home() {
   };
 
   const toggleComponent = () => {
-    if (d1.style.display === "none") {
-      d1.style.display = "block";
-      d2.style.display = "none";
-      setX(0);
-    }
+    if(d1.style.display === "none") {
+        d1.style.display = "block";
+        d2.style.display = "none";
+        setX(0);
+      }
     else {
-      d1.style.display = "none";
-      d2.style.display = "block";
-      setX(1);
-    }
+        d1.style.display = "none";
+        d2.style.display = "block";
+        setX(1);
+      }
   };
 
   const d1 = document.getElementById("d1");
@@ -230,6 +232,7 @@ export default function Home() {
       <h1>{error}</h1>
       <div className="BigBox">
         <br /><br />
+
         <Paper className="menu" elevation={3}>
           <Pie data={data} />
         </Paper>

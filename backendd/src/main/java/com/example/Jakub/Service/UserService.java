@@ -1,12 +1,12 @@
 package com.example.Jakub.Service;
 
-import com.example.Jakub.Dto.UserProfileDto;
-import com.example.Jakub.Entity.UserProfile;
-import com.example.Jakub.Exception.AppException;
 import com.example.Jakub.Config.SecurityConfig;
 import com.example.Jakub.Dto.SignUpDto;
 import com.example.Jakub.Dto.UserDto;
+import com.example.Jakub.Dto.UserProfileDto;
 import com.example.Jakub.Entity.UserInfo;
+import com.example.Jakub.Entity.UserProfile;
+import com.example.Jakub.Exception.AppException;
 import com.example.Jakub.Mapper.UserMapper;
 import com.example.Jakub.Mapper.UserProfileMapper;
 import com.example.Jakub.Repository.UserInfoRepository;
@@ -60,8 +60,6 @@ public class UserService {
     }
 
     public UserDto register(SignUpDto signUpDto) {
-        System.out.println(signUpDto.getUsername());
-        System.out.println(signUpDto.getPassword());
         Optional<UserInfo> optionalUser = userRepository.findByUsername(signUpDto.getUsername());
 
         if (optionalUser.isPresent()) {

@@ -3,8 +3,6 @@ package com.example.Jakub.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "build")

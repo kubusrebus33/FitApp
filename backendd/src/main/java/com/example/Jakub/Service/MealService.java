@@ -1,10 +1,10 @@
 package com.example.Jakub.Service;
 
-import com.example.Jakub.Dto.MealDto;
-import com.example.Jakub.Dto.MealNameDto;
 import com.example.Jakub.Dto.UserProfileDto;
 import com.example.Jakub.Entity.*;
 import com.example.Jakub.Exception.AppException;
+import com.example.Jakub.Repository.*;
+import com.example.Jakub.Entity.*;
 import com.example.Jakub.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class MealService {
     private UserInfoRepository userInfoRepository;
 
     @Autowired
-    private mealKitRepository mealKitRepository;
+    private com.example.Jakub.Repository.mealKitRepository mealKitRepository;
 
     @Autowired
     private MealRepository mealRepository;
@@ -1359,11 +1359,7 @@ public class MealService {
         for(int i = 1; i <= 7; i++){
             mealKitRepository.deleteAllBy_userAndMealGroup(user, i);
         }
-        System.out.println("succesfuly DELETED all 7dayMeals");
     }
-
-    //badania operacyjne, prrogramowanie liniowe
-    //wykresy do diety
 
     public List<Meal> postOneDayDiet(String bearerToken) {
         UserProfileDto userProfile = userService.getUserProfile(bearerToken);
@@ -1387,9 +1383,7 @@ public class MealService {
 
         int userCalories = userProfile.getCaloricDemand();
         int dietInfo = userProfile.getDietInfo();
-        System.out.println("@");
         randomMeals = searchForMeals(userCalories, dietInfo);
-        System.out.println("@");
         saveDiet(bearerToken, randomMeals);
         return randomMeals;
     }
@@ -1420,13 +1414,11 @@ public class MealService {
         for(int i = 1; i <= 7; i++){
             randomMeals = searchForMeals(userCalories, dietInfo);
             saveSevenDiet(bearerToken, randomMeals, i);
-//            for (Meal x : randomMeals) {
-//
-//            }
         }
 
         return randomMeals;
     }
+
     public List<mealKit> getMealKits(String bearerToken) {
         UserInfo user = userInfoRepository.findUserInfoByUsername(jwtService.extractUsername(bearerToken));
 
@@ -1434,9 +1426,10 @@ public class MealService {
 
         return mealKits;
     }
+
     public List<Meal> searchForMeals(int userCalories, int dietInfo) {
         List<Meal> randomMeals = new ArrayList<>();
-        System.out.println("Search for meals USER CALORIES:" + userCalories);
+
         int sumOfCalories = 0, sumOfCarbs = 0, sumOfFats = 0, sumOfProteins = 0;
 
         while(!(((userCalories + 60 > sumOfCalories) && (userCalories - 60 < sumOfCalories)) && ((sumOfCarbs * 4 < userCalories * 0.65) && (sumOfCarbs * 4 > userCalories * 0.50)) &&
@@ -1446,6 +1439,7 @@ public class MealService {
             randomMeals.clear();
 
             List<Integer> rep = new ArrayList<>();
+
             int c = 0;
             sumOfCalories = 0;
             sumOfCarbs = 0;
@@ -1473,7 +1467,6 @@ public class MealService {
                             break;
                     }
                     if ("dinner".equals(meal.getCategoryName())) c++;
-
                     if (c > 1){
                         c = 1;
                         continue;
@@ -1626,14 +1619,9 @@ public class MealService {
         if((userProfile.getCaloricDemand() > calories + 70) || (userProfile.getCaloricDemand() < calories - 70)){
             changeMeal(bearerToken, mealNames);
         }
-        System.out.println("wielkość listyyyyyyyy: "+ newMeals.size());
-        System.out.println("deleting DIET");
         deleteDiet(bearerToken);
-
-        System.out.println("SAVING DIET");
         saveDiet(bearerToken, newMeals);
 
-        System.out.println("RETURNING MEAL");
         return newMeals;
     }
 }

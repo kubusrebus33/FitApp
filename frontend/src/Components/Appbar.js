@@ -39,7 +39,7 @@ export default function Appbar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1}}>
-            EatFitNow
+            FitApp
           </Typography>
           {getAuthToken() !== null && getAuthToken() !== "null" && getAuthToken() !== "undefined" ? (
             <>
@@ -50,7 +50,7 @@ export default function Appbar() {
             </nav>
             <h2 style={{paddingRight:"20px", paddingLeft:"96px"}}>{`Witaj ${extractUsername(getUsername())}`}</h2>
             <Button color="inherit" onClick={handleLogout}> 
-              Wyloguj
+              Wyloguj się
             </Button>
           </>
           ) : (
