@@ -322,13 +322,13 @@ const Create = () => {
 
                             <label> Ilość aktywności fizycznej:</label><br />
                             <input type="radio" value="1" name="activityLevel" required onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Siedzący tryb życia (niewielka lub brak aktywności fizycznej, praca przy biurku)</label>
+                            <label>Siedzący tryb życia (niewielka lub brak aktywności fizycznej, praca przy biurku)</label><br />
                             <input type="radio" value="2" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Lekka aktywność (ćwiczenia 1-3 razy w tygodniu)</label>
+                            <label>Lekka aktywność (ćwiczenia 1-3 razy w tygodniu)</label><br />
                             <input type="radio" value="3" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Średnia aktywność  (ćwiczenia 3-5 razy w tygodniu)</label>
+                            <label>Średnia aktywność  (ćwiczenia 3-5 razy w tygodniu)</label><br />
                             <input type="radio" value="4" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
-                            <label>Bardzo aktywny (ćwiczenia 6-7 razy w tygodniu)</label>
+                            <label>Bardzo aktywny (ćwiczenia 6-7 razy w tygodniu)</label><br />
                             <input type="radio" value="5" name="activityLevel" onChange={(e) => setActivity(e.target.value)}></input>&nbsp;&nbsp;
                             <label>Bardzo intensywna aktywność (ćwiczenia 2 razy dziennie)</label><br /><br />
 
